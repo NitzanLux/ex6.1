@@ -11,9 +11,6 @@ public class Variable {
         this.value = value;
         this.variableType = Type.parseType(type);
         this.variableName = variableName;
-        if (variableType == null) {
-            throw new VaribleException.TypeNotFoundException();
-        }
         if (variableName == null) {
             throw new VaribleException.NoVariableNameException();
         }

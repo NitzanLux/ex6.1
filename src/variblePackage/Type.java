@@ -49,13 +49,13 @@ enum Type {
     }
 
 
-    public static Type parseType(String typeKey){
+    public static Type parseType(String typeKey) throws VaribleException.TypeNotFoundException {
         for (Type currentType : Type.values()) {
             if (typeKey.equals(currentType.toString())) {
                 return currentType;
             }
         }
-        return null;
+        throw new VaribleException.TypeNotFoundException();
     }
 
     private static class Constants {
