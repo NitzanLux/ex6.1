@@ -26,7 +26,7 @@ public class Variable {
         return variableName;
     }
     private void NameChecker(){
-        //todo chack if name is valid
+        //todo check if name is valid
     }
 
 
