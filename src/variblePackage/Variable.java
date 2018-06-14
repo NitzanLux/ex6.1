@@ -3,20 +3,22 @@ package variblePackage;
 public class Variable {
     private String value;
     private String variableName;
-    private Type variableType;
+    private boolean isFinal = false;
+    private VariableType variableType;
 
-    public Variable(String variableName, String value, String type)
-            throws VaribleException.TypeNotFoundException,
-            VaribleException.NoVariableNameException {
+    public Variable(String variableName, String value, String type, boolean isFinal)
+            throws VariableException.TypeNotFoundException,
+            VariableException.NoVariableNameException {
         this.value = value;
-        this.variableType = Type.parseType(type);
+        this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
+        this.isFinal = isFinal;
 
         if (variableType == null) {
-            throw new VaribleException.TypeNotFoundException();
+            throw new VariableException.TypeNotFoundException();
         }
         if (variableName == null) {
-            throw new VaribleException.NoVariableNameException();
+            throw new VariableException.NoVariableNameException();
         }
     }
 

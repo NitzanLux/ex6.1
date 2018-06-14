@@ -1,6 +1,6 @@
 package variblePackage;
 
-abstract class VaribleException extends Exception{
+abstract class VariableException extends Exception{
     private static final long serialVersionUID = 1L;
 
     /*
@@ -11,11 +11,11 @@ abstract class VaribleException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    private VaribleException(String message) {
+    private VariableException(String message) {
         super(message);
     }
 
-    static class TypeNotFoundException extends VaribleException{
+    static class TypeNotFoundException extends VariableException {
         private static final String TYPE_NOT_FOUND_MSG = "variable type was not found";
 
         /*
@@ -28,7 +28,7 @@ abstract class VaribleException extends Exception{
             super(TYPE_NOT_FOUND_MSG);
         }
     }
-    static class NoVariableNameException extends VaribleException{
+    static class NoVariableNameException extends VariableException {
 
         private static final String NO_VARIABLE_NAME_MSG = "no variable name assigned.";
 

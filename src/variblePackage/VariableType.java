@@ -1,6 +1,6 @@
 package variblePackage;
 
-enum Type {
+enum VariableType {
     INTEGER(Constants.INT) {
         boolean isFitValue(String value) {
             try {
@@ -28,17 +28,18 @@ enum Type {
     },
     CHAR(Constants.CHAR1) {
         boolean isFitValue(String value) {
-            return value.length() == 1;
+            return value.length() == 3 && value.startsWith("'") && value.endsWith("'");
         }
     },
     BOOLEAN(Constants.BOOLEAN1) {
         boolean isFitValue(String value) {
-            return value.equals(Constants.TRUE) || value.equals(Constants.FALSE);
+            return value.equals(Constants.TRUE) || value.equals(Constants.FALSE)||
+                    VariableType.INTEGER.isFitValue(value);
         }
     };
 
     private String typeKey;
-    Type(String typeName){
+    VariableType(String typeName){
         this.typeKey = typeName;
     }
     abstract boolean isFitValue(String value);
@@ -49,8 +50,8 @@ enum Type {
     }
 
 
-    public static Type parseType(String typeKey){
-        for (Type currentType : Type.values()) {
+    public static VariableType parseType(String typeKey){
+        for (VariableType currentType : VariableType.values()) {
             if (typeKey.equals(currentType.toString())) {
                 return currentType;
             }
