@@ -22,7 +22,7 @@ public class Variable {
         }
     }
     private void NameChecker(){
-        //todo chack if name is valid
+        //todo check if name is valid
     }
 
 
