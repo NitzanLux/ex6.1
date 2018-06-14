@@ -21,6 +21,9 @@ public class Variable {
             throw new VariableException.NoVariableNameException();
         }
     }
+    private void NameChecker(){
+        //todo chack if name is valid
+    }
 
 
 }

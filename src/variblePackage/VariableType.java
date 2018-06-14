@@ -56,7 +56,7 @@ enum VariableType {
                 return currentType;
             }
         }
-        return null;
+        throw new VaribleException.TypeNotFoundException();
     }
 
     private static class Constants {
