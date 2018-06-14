@@ -21,6 +21,10 @@ public class Variable {
             throw new VariableException.NoVariableNameException();
         }
     }
+
+    public String getName(){
+        return variableName;
+    }
     private void NameChecker(){
         //todo chack if name is valid
     }

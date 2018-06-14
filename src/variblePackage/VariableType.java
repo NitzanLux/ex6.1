@@ -50,13 +50,13 @@ enum VariableType {
     }
 
 
-    public static VariableType parseType(String typeKey){
+    public static VariableType parseType(String typeKey) throws VariableException.TypeNotFoundException {
         for (VariableType currentType : VariableType.values()) {
             if (typeKey.equals(currentType.toString())) {
                 return currentType;
             }
         }
-        throw new VaribleException.TypeNotFoundException();
+        throw new VariableException.TypeNotFoundException();
     }
 
     private static class Constants {
