@@ -30,7 +30,6 @@ public class Variable {
     }
 
     private void assignVariable(String value) throws VariableException {
-    private void assignVariable(String value) throws VariableException.ValueNotMatchingTypeException, VariableException.FinalException.FinalAssignedAlradyException {
         if (isFinal&&isValueAssigned){
             throw new  VariableException.FinalException.FinalAssignedAlradyException();
         }
