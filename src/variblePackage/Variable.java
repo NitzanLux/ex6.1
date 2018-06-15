@@ -7,8 +7,7 @@ public class Variable {
     private VariableType variableType;
 
     Variable(String type, String variableName, String value, boolean isFinal)
-            throws VariableException.TypeNotFoundException,
-            VariableException.NoVariableNameException, VariableException.ValueNotMatchingTypeException, VariableException.FinalException.FinalNotAssignedException, VariableException.FinalException.FinalAssignedAlradyException {
+            throws VariableException{
         this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
         this.isFinal = isFinal;
@@ -30,6 +29,7 @@ public class Variable {
         return variableName;
     }
 
+    private void assignVariable(String value) throws VariableException {
     private void assignVariable(String value) throws VariableException.ValueNotMatchingTypeException, VariableException.FinalException.FinalAssignedAlradyException {
         if (isFinal&&isValueAssigned){
             throw new  VariableException.FinalException.FinalAssignedAlradyException();
