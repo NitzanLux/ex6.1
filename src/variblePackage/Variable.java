@@ -1,15 +1,15 @@
 package variblePackage;
 
 public class Variable {
-    private String value;
+    private boolean isValueAssigned;
     private String variableName;
     private boolean isFinal = false;
     private VariableType variableType;
 
-    public Variable(String variableName, String value, String type, boolean isFinal)
+    Variable(String type, String variableName, Boolean isValueAssigned, boolean isFinal)
             throws VariableException.TypeNotFoundException,
             VariableException.NoVariableNameException {
-        this.value = value;
+        this.isValueAssigned = isValueAssigned;
         this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
         this.isFinal = isFinal;
@@ -25,7 +25,8 @@ public class Variable {
     public String getName(){
         return variableName;
     }
-    private void NameChecker(){
+
+    void NameChecker(){
         //todo check if name is valid
     }
 
