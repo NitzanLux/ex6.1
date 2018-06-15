@@ -73,6 +73,9 @@ public class VariableFactory {
         return null;
     }
 
+    // TODO: in case of reassignment loop running over all scopes in stack,
+    // todo - checking for declaration of variable before, if its final, its type and if it exists
+
     public static void main(String[] args) {
 //        Variable v = createVariable("ab=BDNbbdj  ddsd  dvd0");
         System.out.println("\\d");

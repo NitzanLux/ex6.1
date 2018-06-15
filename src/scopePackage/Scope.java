@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Scope {
 
-    private HashMap variables;
+    private HashMap<String, Variable> variables;
     private boolean isMethod;
 
     public Scope(List<Variable> variables, boolean isMethod){
-        this.variables = new HashMap<String,Variable>();
+        this.variables = new HashMap<>();
         this.isMethod = isMethod;
     }
 

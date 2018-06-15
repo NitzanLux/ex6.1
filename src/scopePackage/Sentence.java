@@ -5,12 +5,12 @@ public enum Sentence {
     ASSIGNMENT(Constants.regex, ScoopPosition.BOTH){},
     MULTI_ASSIGNMENT(Constants.regex, ScoopPosition.BOTH){},
     IF(Constants.regex, ScoopPosition.INNER_SCOPE){},
-    WHILTE(Constants.regex, ScoopPosition.INNER_SCOPE){},
+    WHILE(Constants.regex, ScoopPosition.INNER_SCOPE){},
     METHOD_CALL(Constants.regex, ScoopPosition.INNER_SCOPE){},
     RETURN(Constants.regex, ScoopPosition.INNER_SCOPE){},
     REASSIGNMENT(Constants.regex, ScoopPosition.INNER_SCOPE){},
     MULTI_REASSIGNMENT(Constants.regex, ScoopPosition.INNER_SCOPE){};
-    //todo breckt  or spaces ?
+    //todo bracket or spaces?
     private final ScoopPosition scopPosition;
     private final String regex;
     Sentence(String regex,ScoopPosition scopPosition){
