@@ -1,11 +1,13 @@
 package scopePackage;
 import variblePackage.Variable;
+import variblePackage.VariableException;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class Scope {
 
-    private HashMap<String, Variable> variables;
+    private HashMap<String,Variable> variables;
     private boolean isMethod;
 
     public Scope(List<Variable> variables, boolean isMethod){
@@ -27,5 +29,11 @@ public class Scope {
             throw new AlreadyAssignedException(variable.getName());
         }
 //        variables.add(variable);
+    }
+    public void reAssigneVariable(String variableName,String value) throws VariableException {
+        Variable variable=variables.get(variableName);
+        if (variable!=null){
+            variable.assignVariable(value);
+        }
     }
 }
