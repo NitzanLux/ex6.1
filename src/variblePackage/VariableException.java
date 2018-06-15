@@ -42,4 +42,13 @@ abstract class VariableException extends Exception{
             super(NO_VARIABLE_NAME_MSG);
         }
     }
+    static class ValueNotMatchingTypeException extends VariableException{
+
+
+        private static final String VAL_ASGMNT_MSG = "value you tried to assign doesn't fit variable type";
+
+        ValueNotMatchingTypeException() {
+            super(VAL_ASGMNT_MSG);
+        }
+    }
 }
