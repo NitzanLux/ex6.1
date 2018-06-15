@@ -36,4 +36,8 @@ public class Scope {
             variable.assignVariable(value);
         }
     }
+
+    public HashMap<String, Variable> getVariables() {
+        return variables;
+    }
 }

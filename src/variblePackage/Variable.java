@@ -47,6 +47,13 @@ public class Variable {
     }
 
 
+    public VariableType getVariableType() {
+        return variableType;
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
 }
 
 
