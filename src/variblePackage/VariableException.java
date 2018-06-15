@@ -1,6 +1,6 @@
 package variblePackage;
 
-abstract class VariableException extends Exception{
+public abstract class VariableException extends Exception{
     private static final long serialVersionUID = 1L;
 
     /*

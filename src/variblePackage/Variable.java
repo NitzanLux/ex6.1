@@ -25,11 +25,11 @@ public class Variable {
         }
     }
 
-    String getName(){
+    public String getName(){
         return variableName;
     }
 
-    private void assignVariable(String value) throws VariableException {
+    public void assignVariable(String value) throws VariableException {
         if (isFinal&&isValueAssigned){
             throw new  VariableException.FinalException.FinalAssignedAlradyException();
         }
