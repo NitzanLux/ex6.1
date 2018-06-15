@@ -47,8 +47,52 @@ abstract class VariableException extends Exception{
 
         private static final String VAL_ASGMNT_MSG = "value you tried to assign doesn't fit variable type";
 
+        /*
+         * Constructs a new exception with the specified detail message.  The
+         * cause is not initialized, and may subsequently be initialized by
+         * a call to {@link #initCause}.
+         *
+         */
         ValueNotMatchingTypeException() {
             super(VAL_ASGMNT_MSG);
         }
+    }
+    static class FinalException extends VariableException{
+        FinalException(String massege){
+            super(massege);
+        }
+        static class FinalAssignedAlradyException extends VariableException.FinalException{
+
+
+            private static final String VAL_FINAL_REASSIGMENT_MSG = "the final variable is already assigned";
+
+            /*
+             * Constructs a new exception with the specified detail message.  The
+             * cause is not initialized, and may subsequently be initialized by
+             * a call to {@link #initCause}.
+             *
+             */
+            FinalAssignedAlradyException() {
+                super(VAL_FINAL_REASSIGMENT_MSG);
+            }
+        }
+        static class FinalNotAssignedException extends VariableException.FinalException{
+
+
+            private static final String VAL_FINAL_VALUE_ASSIGMENT_MSG =
+                    "the final variable you tried to assigned has no value";
+
+            /*
+             * Constructs a new exception with the specified detail message.  The
+             * cause is not initialized, and may subsequently be initialized by
+             * a call to {@link #initCause}.
+             *
+             */
+            FinalNotAssignedException() {
+                super(VAL_FINAL_VALUE_ASSIGMENT_MSG);
+            }
+        }
+
+
     }
 }

@@ -8,14 +8,16 @@ public class Variable {
 
     Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException.TypeNotFoundException,
-            VariableException.NoVariableNameException, VariableException.ValueNotMatchingTypeException {
+            VariableException.NoVariableNameException, VariableException.ValueNotMatchingTypeException, VariableException.FinalException.FinalNotAssignedException, VariableException.FinalException.FinalAssignedAlradyException {
         this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
         this.isFinal = isFinal;
         if(value != null){
             assignVariable(value);
         }
-
+        if (isFinal&&value==null){
+            throw new VariableException.FinalException.FinalNotAssignedException();
+        }
         if (variableType == null) {
             throw new VariableException.TypeNotFoundException();
         }
@@ -24,11 +26,14 @@ public class Variable {
         }
     }
 
-    public String getName(){
+    String getName(){
         return variableName;
     }
 
-    private void assignVariable(String value) throws VariableException.ValueNotMatchingTypeException {
+    private void assignVariable(String value) throws VariableException.ValueNotMatchingTypeException, VariableException.FinalException.FinalAssignedAlradyException {
+        if (isFinal&&isValueAssigned){
+            throw new  VariableException.FinalException.FinalAssignedAlradyException();
+        }
         if(variableType.isFitValue(value)){
             isValueAssigned = true;
         }
@@ -39,6 +44,7 @@ public class Variable {
 
     void NameChecker(){
         //todo check if name is valid
+        //(?:^[A-Za-z_]\w*[A-Za-z]{1,}\w*\b)*
     }
 
 
