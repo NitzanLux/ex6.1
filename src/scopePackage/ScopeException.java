@@ -7,7 +7,7 @@ public abstract class ScopeException extends Exception {
     }
 
     public static class AlreadyAssignedException extends ScopeException{
-        public AlreadyAssignedException() {
+        public AlreadyAssignedException(String name) {
             super("variable is already assigned");
         }
     }
