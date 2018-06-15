@@ -7,8 +7,7 @@ public class Variable {
     private VariableType variableType;
 
     Variable(String type, String variableName, String value, boolean isFinal)
-            throws VariableException.TypeNotFoundException,
-            VariableException.NoVariableNameException, VariableException.ValueNotMatchingTypeException {
+            throws VariableException{
         this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
         this.isFinal = isFinal;
@@ -28,7 +27,7 @@ public class Variable {
         return variableName;
     }
 
-    private void assignVariable(String value) throws VariableException.ValueNotMatchingTypeException {
+    private void assignVariable(String value) throws VariableException {
         if(variableType.isFitValue(value)){
             isValueAssigned = true;
         }

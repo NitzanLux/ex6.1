@@ -28,11 +28,9 @@ public class VariableFactory {
      * variable creator
      * @param line a code line
      * @return a variable object fits the line
-     * @throws VariableException.NoVariableNameException if the var name illegal
-     * @throws VariableException.TypeNotFoundException if the var type illegal
+     * @throws VariableException if
      */
-    public Variable createVariable(String line) throws VariableException.NoVariableNameException,
-            VariableException.TypeNotFoundException, VariableException.ValueNotMatchingTypeException {
+    public Variable createVariable(String line) throws VariableException {
         Pattern pattern = Pattern.compile("\\w+");
         Matcher matcher = pattern.matcher(line);
         List<String> foundMatches = new ArrayList<>();
@@ -44,14 +42,11 @@ public class VariableFactory {
 
     /**
      *
-     * @param foundMatches
-     * @return
-     * @throws VariableException.NoVariableNameException
-     * @throws VariableException.TypeNotFoundException
+     * @param foundMatches is
+     * @return item
+     * @throws VariableException if
      */
-    private Variable getVariableFromList(List<String> foundMatches)
-            throws VariableException.NoVariableNameException, VariableException.TypeNotFoundException,
-            VariableException.ValueNotMatchingTypeException {
+    private Variable getVariableFromList(List<String> foundMatches) throws VariableException {
         boolean isFinal = false;
         int valStart;
         String vType, vName, vValue = null;
