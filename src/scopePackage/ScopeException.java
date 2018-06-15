@@ -7,8 +7,10 @@ public abstract class ScopeException extends Exception {
     }
 
     public static class AlreadyAssignedException extends ScopeException{
+        private static final String ALREADY_ASSIGNED_MSG = "variable %sis already assigned";
+
         public AlreadyAssignedException(String name) {
-            super("variable is already assigned");
+            super(String.format(ALREADY_ASSIGNED_MSG, name));
         }
     }
 }

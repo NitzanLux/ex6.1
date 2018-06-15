@@ -24,9 +24,9 @@ public class Scope {
         return false;
     }
 
-    public void addVariable(Variable variable) throws AlreadyAssignedException{
+    public void addVariable(Variable variable) throws ScopeException {
         if (isVariableAssigned(variable)){
-            throw new AlreadyAssignedException(variable.getName());
+            throw new ScopeException.AlreadyAssignedException(variable.getName());
         }
 //        variables.add(variable);
     }
