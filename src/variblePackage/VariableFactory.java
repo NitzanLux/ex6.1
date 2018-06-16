@@ -70,26 +70,38 @@ public class VariableFactory {
         return new Variable(vType, vName, vValue, isFinal);
     }
 
-    private Variable[] multiAssignment(String line) throws VariableException {
+    /**
+     * @param line code line
+     * @return a variables array containing all variables in line.
+     * @throws VariableException
+     */
+    private static Variable[] multiAssignment(String line) throws VariableException {
         boolean isFinal = false;
-        if(line.startsWith("final")){
+        line = line.split(";")[0];
+        if(line.startsWith("final ")){
+            // if final declaration.
             line = line.subSequence(6, line.length()).toString();
             isFinal = true;
         }
-        String[] splitLine = line.split(" ");
-        String vType = splitLine[0];
-        List<String[]> stringList = splitArrayBy(Arrays.copyOfRange(splitLine,
-                1, splitLine.length), ",");
+
+        String[] splitLine = line.split(", ");
+        //splitting the line by spaces
+        String vType = splitLine[0].split(" ")[0];
+        //splits the allegedly type of variables out of the line
+        splitLine[0] = splitLine[0].split(vType + " ")[1];
+//        List<String[]> stringList = splitArrayBy(splitLine, ",");
+        //creates a linked list of string arrays containing everything that is not a space.
         LinkedList<String> names = new LinkedList<>();
         LinkedList<String> values = new LinkedList<>();
-        for(String[] sequence: stringList){
-            names.add(sequence[0]);
-            if(sequence.length == 3){
-                values.add(sequence[2]);
+        for(String sequence: splitLine){
+            names.add(sequence.split(" ")[0]);
+            if(sequence.split(" ").length == 3){
+                values.add(sequence.split(" ")[2]);
             }
             else{
                 values.add(null);
             }
+            //todo throw exception
         }
         Variable[] variables = new Variable[names.size()];
         for(int i = 0; i < variables.length; i++){
@@ -98,23 +110,21 @@ public class VariableFactory {
         return variables;
     }
 
-    private List<String[]> splitArrayBy(String[] array, String s){
-        LinkedList<String[]> arrays = new LinkedList<String[]>();
-        int start = 0;
-        for(int i = 0; i < array.length; i++){
-            if(array[i].equals(s) && i < array.length - 1){
-                arrays.add(Arrays.copyOfRange(array, start, i));
-                start = i + 1;
-            }
-            else if(i == array.length - 1){
-                arrays.add(Arrays.copyOfRange(array, start, i));
-            }
-        }
-        //Removing the ';'
-        arrays.get(arrays.size() - 1)[arrays.get(arrays.size() - 1).length - 1] =
-                arrays.get(arrays.size() - 1)[arrays.get(arrays.size() - 1).length - 1].split(";")[0];
-        return arrays;
-    }
+//    private static List<String[]> splitArrayBy(String[] array, String s){
+//        LinkedList<String[]> arrays = new LinkedList<String[]>();
+//        int start = 0;
+//        for(int i = 0; i < array.length; i++){
+//            if((array[i].equals(s) && i < array.length - 1) || i == array.length - 1){
+//                arrays.add(Arrays.copyOfRange(array, start, i));
+//                start = i + 1;
+////                for(String s: arrays)
+//            }
+////            else if(i == array.length - 1){
+////                arrays.add(Arrays.copyOfRange(array, start, i));
+////            }
+//        }
+//        return arrays;
+//    }
     // TODO: in case of reassignment loop running over all scopes in stack,
     // todo - checking for declaration of variable before, if its final, its type and if it exists
     private boolean isLegalReAssignment(Variable variable){
@@ -130,8 +140,12 @@ public class VariableFactory {
         return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws VariableException {
 //        Variable v = createVariable("ab=BDNbbdj  ddsd  dvd0");
-        System.out.println("\\d");
+        String line = "int nitzan = 0, eldar, david = 1;";
+        Variable[] vs = multiAssignment(line);
+        for(Variable v: vs){
+            System.out.println(v.getName());
+        }
     }
 }
