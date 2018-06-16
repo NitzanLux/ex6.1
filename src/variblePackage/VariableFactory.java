@@ -84,12 +84,20 @@ public class VariableFactory {
             isFinal = true;
         }
 
-        String[] splitLine = line.split(", ");
+        String[] splitLine = line.split(",");
         //splitting the line by spaces
+        for(int i = 0; i < splitLine.length; i++){
+            if(splitLine[i].startsWith(" ")){
+                splitLine[i] = splitLine[i].substring(1);
+            }
+            if(splitLine[i].endsWith(" ")){
+                splitLine[i] = splitLine[i].substring(0, splitLine[i].length() - 1);
+            }
+        }
         String vType = splitLine[0].split(" ")[0];
         //splits the allegedly type of variables out of the line
         splitLine[0] = splitLine[0].split(vType + " ")[1];
-//        List<String[]> stringList = splitArrayBy(splitLine, ",");
+        //List<String[]> stringList = splitArrayBy(splitLine, ",");
         //creates a linked list of string arrays containing everything that is not a space.
         LinkedList<String> names = new LinkedList<>();
         LinkedList<String> values = new LinkedList<>();
