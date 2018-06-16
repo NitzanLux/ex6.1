@@ -2,14 +2,17 @@ package scopePackage;
 
 public enum Sentence {
     METHOD(Constants.regex, ScoopPosition.OUTTER_SCOPE){},
-    ASSIGNMENT(Constants.regex, ScoopPosition.BOTH){},
-    MULTI_ASSIGNMENT(Constants.regex, ScoopPosition.BOTH){},
-    IF(Constants.regex, ScoopPosition.INNER_SCOPE){},
-    WHILE(Constants.regex, ScoopPosition.INNER_SCOPE){},
+    ASSIGNMENT("^[a-zA-z]+ +\\w+ *\\= *[\\w]+ *\\;", ScoopPosition.BOTH){},
+    MULTI_ASSIGNMENT(String.format("^[ ]*\\w+[ ]+[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;",
+            Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE)
+            , ScoopPosition.BOTH){},
+    IF("^"+ Constants.IF_STATMENT +" *\\((?:\\w*(?:(?:\\|\\|)|(?:\\=\\=)|(?:\\&\\&))\\w*)+\\){", ScoopPosition.INNER_SCOPE){},
+    WHILE("^"+ Constants.WHILE_STATMENT +" *\\((?:\\w*(?:(?:\\|\\|)|(?:\\=\\=)|(?:\\&\\&))\\w*)+\\){", ScoopPosition.INNER_SCOPE){},
     METHOD_CALL(Constants.regex, ScoopPosition.INNER_SCOPE){},
-    RETURN(Constants.regex, ScoopPosition.INNER_SCOPE){},
-    REASSIGNMENT(Constants.regex, ScoopPosition.INNER_SCOPE){},
-    MULTI_REASSIGNMENT(Constants.regex, ScoopPosition.INNER_SCOPE){};
+    RETURN("^[ ]*return\\;[ ]*$", ScoopPosition.INNER_SCOPE){},
+    REASSIGNMENT("^\\w+[ ]*=[ ]*\\w+\\; *$", ScoopPosition.INNER_SCOPE){},
+    MULTI_REASSIGNMENT(String.format("^[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;"//todo change varibls to all charcter variable(for string)
+            , Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE), ScoopPosition.INNER_SCOPE){};
     //todo bracket or spaces?
     private final ScoopPosition scopPosition;
     private final String regex;
@@ -40,6 +43,9 @@ public enum Sentence {
 
     private static class Constants {
         private static final String regex = "ff";//todo "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+        private static final String MULTI_ASSIGNMENT_MINUS_ONE = "MULTI_ASSIGNMENT_MINUS_ONE";
+        private static final String IF_STATMENT = "if";
+        private static final String WHILE_STATMENT = "while";
     }
 //todo  is this the proper way?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
     public static Sentence[] getScoping(ScoopPosition scopPosition){
