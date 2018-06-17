@@ -2,12 +2,12 @@ package scopePackage;
 
 public enum Sentence {
     METHOD(Constants.regex, ScoopPosition.OUTTER_SCOPE){},
-    ASSIGNMENT("^[a-zA-z]+ +\\w+ *\\= *[\\w]+ *\\;", ScoopPosition.BOTH){},
-    MULTI_ASSIGNMENT(String.format("^[ ]*\\w+[ ]+[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;",
+    ASSIGNMENT("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*[\\S]+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?!\\=|\\,)[\\S]+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$", ScoopPosition.BOTH){},
+    MULTI_ASSIGNMENT(String.format("[ \\t]*final{0,1}^[ ]*\\w+[ ]+[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;",
             Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE)
             , ScoopPosition.BOTH){},
-    IF("^"+ Constants.IF_STATMENT +" *\\((?:\\w*(?:(?:\\|\\|)|(?:\\=\\=)|(?:\\&\\&))\\w*)+\\){", ScoopPosition.INNER_SCOPE){},
-    WHILE("^"+ Constants.WHILE_STATMENT +" *\\((?:\\w*(?:(?:\\|\\|)|(?:\\=\\=)|(?:\\&\\&))\\w*)+\\){", ScoopPosition.INNER_SCOPE){},
+    IF(String.format("[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{", Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
+    WHILE(String.format("[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{", Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
     METHOD_CALL(Constants.regex, ScoopPosition.INNER_SCOPE){},
     RETURN("^[ ]*return\\;[ ]*$", ScoopPosition.INNER_SCOPE){},
     REASSIGNMENT("^\\w+[ ]*=[ ]*\\w+\\; *$", ScoopPosition.INNER_SCOPE){},
@@ -67,3 +67,5 @@ public enum Sentence {
         return sentences;
     }
 }
+//^[ \t]*(?:final )?\b[ \t]*(?!\bfinal\b)[A-Za-z]{2,}[ \t]+(?:(?!\bfinal\b)[\w])+(?:[ \t]*(?:\=[ \t]*(?:(?![\,\=])[\S])+)?[ \t]*(?:\,[ \t]*(?:(?!
+//[\,\=])[\S])+)?){1,}[ \t]*\;[ \t]*
