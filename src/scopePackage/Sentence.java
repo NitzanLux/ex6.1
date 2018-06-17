@@ -2,7 +2,7 @@ package scopePackage;
 
 public enum Sentence {
     METHOD(Constants.regex, ScoopPosition.OUTTER_SCOPE){},
-    ASSIGNMENT("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*[\\S]+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?!\\=|\\,)[\\S]+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$", ScoopPosition.BOTH){},
+    ASSIGNMENT("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$", ScoopPosition.BOTH){},//todo updated insertion f!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     MULTI_ASSIGNMENT(String.format("[ \\t]*final{0,1}^[ ]*\\w+[ ]+[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;",
             Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE)
             , ScoopPosition.BOTH){},
@@ -39,6 +39,9 @@ public enum Sentence {
 
     }
 
+    public static void main(String[] args) {
+        System.out.println("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*[\\S]+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?!\\=|\\,)[\\S]+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$");
+    }
 
 
     private static class Constants {
