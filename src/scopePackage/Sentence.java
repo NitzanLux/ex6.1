@@ -1,18 +1,15 @@
 package scopePackage;
 
 public enum Sentence {
-    METHOD(Constants.regex, ScoopPosition.OUTTER_SCOPE){},
+    METHOD("^[ \\t]*(?:\\bvoid\\b){1}[ \\t]+[\\w]+[ \\t]*\\([ \\t]*(?:(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\,[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+)*[ \\t]*)?\\)[ \\t]*\\{[ \\t]*$", ScoopPosition.OUTTER_SCOPE){},
     ASSIGNMENT("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$", ScoopPosition.BOTH){},//todo updated insertion f!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    MULTI_ASSIGNMENT(String.format("[ \\t]*final{0,1}^[ ]*\\w+[ ]+[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;",
-            Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE)
-            , ScoopPosition.BOTH){},
-    IF(String.format("[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{", Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
-    WHILE(String.format("[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{", Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
-    METHOD_CALL(Constants.regex, ScoopPosition.INNER_SCOPE){},
+    IF(String.format("^[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{[ \\t]*$", Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
+    WHILE(String.format("^[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{[ \\t]*$", Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
+    METHOD_CALL("^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:[\\w]+[ \\t]*(?:\\,[ \\t]*[\\w]+[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$", ScoopPosition.INNER_SCOPE){},
     RETURN("^[ ]*return\\;[ ]*$", ScoopPosition.INNER_SCOPE){},
-    REASSIGNMENT("^\\w+[ ]*=[ ]*\\w+\\; *$", ScoopPosition.INNER_SCOPE){},
-    MULTI_REASSIGNMENT(String.format("^[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*=[ ]*[\\w]+(?:[ ]*,[\\w]*){%s}[ ]*\\;"//todo change varibls to all charcter variable(for string)
-            , Constants.MULTI_ASSIGNMENT_MINUS_ONE, Constants.MULTI_ASSIGNMENT_MINUS_ONE), ScoopPosition.INNER_SCOPE){};
+    REASSIGNMENT("^[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)*[ \\t]*\\;[ \\t]*$", ScoopPosition.INNER_SCOPE){},
+    BLANK_LINE("^(?:\\\\{2}.*)?[ \\t]*$",ScoopPosition.BOTH),
+    CLOSE_SCOPE("^[ \\t]*\\{[ \\t]*$",ScoopPosition.BOTH);
     //todo bracket or spaces?
     private final ScoopPosition scopPosition;
     private final String regex;
@@ -39,9 +36,7 @@ public enum Sentence {
 
     }
 
-    public static void main(String[] args) {
-        System.out.println("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*[\\S]+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?!\\=|\\,)[\\S]+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$");
-    }
+
 
 
     private static class Constants {
@@ -68,6 +63,10 @@ public enum Sentence {
             }
         }
         return sentences;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("^\\w+[ ]*=[ ]*\\w+\\; *$");
     }
 }
 //^[ \t]*(?:final )?\b[ \t]*(?!\bfinal\b)[A-Za-z]{2,}[ \t]+(?:(?!\bfinal\b)[\w])+(?:[ \t]*(?:\=[ \t]*(?:(?![\,\=])[\S])+)?[ \t]*(?:\,[ \t]*(?:(?!
