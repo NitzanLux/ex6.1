@@ -1,20 +1,25 @@
 package scopePackage;
 
+import java.util.regex.Pattern;
+
 public enum Sentence {
-    METHOD("^[ \\t]*(?:\\bvoid\\b){1}[ \\t]+[\\w]+[ \\t]*\\([ \\t]*(?:(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\,[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+)*[ \\t]*)?\\)[ \\t]*\\{[ \\t]*$", ScoopPosition.OUTTER_SCOPE){},
-    ASSIGNMENT("^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$", ScoopPosition.BOTH){},//todo updated insertion f!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    IF(String.format("^[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{[ \\t]*$", Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
-    WHILE(String.format("^[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{[ \\t]*$", Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
-    METHOD_CALL("^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:[\\w]+[ \\t]*(?:\\,[ \\t]*[\\w]+[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$", ScoopPosition.INNER_SCOPE){},
-    RETURN("^[ ]*return\\;[ ]*$", ScoopPosition.INNER_SCOPE){},
-    REASSIGNMENT("^[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)*[ \\t]*\\;[ \\t]*$", ScoopPosition.INNER_SCOPE){},
-    BLANK_LINE("^(?:\\\\{2}.*)?[ \\t]*$",ScoopPosition.BOTH),
-    CLOSE_SCOPE("^[ \\t]*\\{[ \\t]*$",ScoopPosition.BOTH);
+    METHOD(Constants.METHOD_REGEX_STR, ScoopPosition.OUTTER_SCOPE)
+            {public boolean processSentence(String line){
+                return true;//todo kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkpop
+            }},
+    ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH){},
+    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
+    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
+    METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){},
+    RETURN(Constants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE){},
+    REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE){},
+    BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH),
+    CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH);
     //todo bracket or spaces?
     private final ScoopPosition scopPosition;
-    private final String regex;
+    private final Pattern regex;
     Sentence(String regex,ScoopPosition scopPosition){
-        this.regex=regex;
+        this.regex=Pattern.compile(regex);
         this.scopPosition=scopPosition;
     }
     private enum ScoopPosition {
@@ -35,15 +40,22 @@ public enum Sentence {
         }
 
     }
+    public abstract boolean processSentence(String line);
 
 
 
 
     private static class Constants {
-        private static final String regex = "ff";//todo "oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
-        private static final String MULTI_ASSIGNMENT_MINUS_ONE = "MULTI_ASSIGNMENT_MINUS_ONE";
         private static final String IF_STATMENT = "if";
         private static final String WHILE_STATMENT = "while";
+        private static final String RETURN_REGEX_STR = "^[ ]*return\\;[ ]*$";
+        private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:[\\w]+[ \\t]*(?:\\,[ \\t]*[\\w]+[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
+        private static final String CONDITION_REGEX_STR = "^[ \\t]*%s[ \\t]*\\((?:[ \\t]*\\w*[ \\t]*(?:(?:\\|\\|)|(?:(?:\\!|\\=)\\=)|(?:\\&\\&)|)[ \\t]*\\w*[ \\t]*)+\\)[ \\t]*{[ \\t]*$";
+        private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$";
+        private static final String METHOD_REGEX_STR = "^[ \\t]*(?:\\bvoid\\b){1}[ \\t]+[\\w]+[ \\t]*\\([ \\t]*(?:(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\,[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+)*[ \\t]*)?\\)[ \\t]*\\{[ \\t]*$";
+        private static final String REASSIGNMENT_REGEX_STR = "^[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)[\\S])+)*[ \\t]*\\;[ \\t]*$";
+        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[ \\t]*$";
+        private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
 //todo  is this the proper way?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
     public static Sentence[] getScoping(ScoopPosition scopPosition){
@@ -71,3 +83,4 @@ public enum Sentence {
 }
 //^[ \t]*(?:final )?\b[ \t]*(?!\bfinal\b)[A-Za-z]{2,}[ \t]+(?:(?!\bfinal\b)[\w])+(?:[ \t]*(?:\=[ \t]*(?:(?![\,\=])[\S])+)?[ \t]*(?:\,[ \t]*(?:(?!
 //[\,\=])[\S])+)?){1,}[ \t]*\;[ \t]*
+//IF ^[ \t]*%s[ \t]*\((?:[ \t]*\w*[ \t]*(?:(?:\|\|)|(?:(?:\!|\=)\=)|(?:\&\&)|)[ \t]*\w*[ \t]*)+\)[ \t]*{[ \t]*$
