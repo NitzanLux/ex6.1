@@ -1,5 +1,7 @@
 package variblePackage;
 import scopePackage.Scope;
+import scopePackage.ScopeException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -15,12 +17,12 @@ public class VariableFactory {
         return instance;
     }
 
-    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
-       if(isReassignment){
-           return reAssignment(line);
-       }
-       return makeAssignment(line);
-    }
+//    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
+//       if(isReassignment){
+//           return reAssignment(line);
+//       }
+//       return makeAssignment(line);
+//    }
 
     private VariableFactory(){
 
@@ -35,7 +37,7 @@ public class VariableFactory {
      * @return a variables array containing all variables in line.
      * @throws VariableException
      */
-    private Variable[] makeAssignment(String line) throws VariableException {
+    public void makeAssignment(String line) throws VariableException, ScopeException {
         boolean isFinal = false;
         LinkedList<String> strings = getListedVariables(line);
         if(strings.get(0).equals(FINAL)){
@@ -43,7 +45,10 @@ public class VariableFactory {
             isFinal = true;
             strings.remove(0);
         }
-        return getVariables(isFinal, strings);
+        Variable[] vars = getVariables(isFinal, strings);
+        for(Variable var: vars){
+            currentStack.getFirst().addVariable(var);
+        }
     }
 
     private LinkedList<String> getListedVariables(String line){
@@ -116,6 +121,12 @@ public class VariableFactory {
         return variables;
     }
 
+    /**
+     * insert varibels to current scop hashmap
+     */
+    public void insertVariabels(String line){
+
+    }
     // TODO: in case of reassignment loop running over all scopes in stack,
     // todo - checking for declaration of variable before, if its final, its type and if it exists
     private boolean isLegalReAssignment(Variable variable){

@@ -1,7 +1,12 @@
 package main;
 
 
+import scopePackage.ConditionFactory;
 import scopePackage.MethodFactory;
+import scopePackage.ScopeException;
+import variblePackage.Variable;
+import variblePackage.VariableException;
+import variblePackage.VariableFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,9 +21,9 @@ public enum LineType {
                 return false;
             }},
     ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH){
-        public boolean processSentence(String line){
+        public boolean processSentence(String line) throws VariableException, ScopeException {
             if (this.isMatch(line)){
-
+                VariableFactory.getInstance().makeAssignment(line);
                 return true;
             }
             return false;
@@ -28,7 +33,7 @@ public enum LineType {
         @Override
         public boolean processSentence(String line) {
             if (this.isMatch(line)){
-
+                ConditionFactory.getInstance().
                 return true;
             }
             return false;
@@ -38,7 +43,7 @@ public enum LineType {
         @Override
         public boolean processSentence(String line) {
             if (this.isMatch(line)){
-
+                //Co
                 return true;
             }
             return false;
@@ -48,7 +53,7 @@ public enum LineType {
         @Override
         public boolean processSentence(String line) {
             if (this.isMatch(line)){
-
+                MethodFactory.getInstance().setLine(line);
                 return true;
             }
             return false;
@@ -115,11 +120,12 @@ public enum LineType {
         }
 
     }
-    public abstract boolean processSentence(String line);
+    public abstract boolean processSentence(String line) throws VariableException, ScopeException;
     boolean isMatch(String line){
         Matcher matcher=this.regex.matcher(line);
         return matcher.matches();
     }
+    private boolean conditionProcess()
 
 
 
