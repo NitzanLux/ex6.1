@@ -9,12 +9,12 @@ public class ConditionFactory {
 
     private static ConditionFactory instance = new ConditionFactory();
 
-    ////////////////     //////      ////////         //////
-          ///          ///    ///    ///    ///     ///    ///
-          ///          ///    ///    ///     ///    ///    ///
-          ///          ///    ///    ///     ///    ///    ///
-          ///          ///    ///    ///    ///     ///    ///
-          ///            //////       ////////        //////
+    ///////////////     //////      ////////         //////
+          ///         ///    ///    ///    ///     ///    ///
+          ///         ///    ///    ///     ///    ///    ///
+          ///         ///    ///    ///     ///    ///    ///
+          ///         ///    ///    ///    ///     ///    ///
+          ///           //////       ////////        //////
 
     private ConditionFactory(){
 
@@ -28,11 +28,22 @@ public class ConditionFactory {
         String l = line.split("\\{")[0];
         l = l.split("\\(")[1];
         l = l.split("\\)")[0];
+        String[] vars = l.split("||");
+        List<String[]>
+        for(String s: vars){
+            s = s.split("&&");
+        }
         return l.split(" ");
+    }
+
+    private boolean isLegalCondition(String[] condition){
+        if()
     }
 
 //    private List<String[]> splitByVar(String[] strings){
 //
 //    }
+    //if(nitzan == 3){
+
 
 }

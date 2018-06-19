@@ -1,9 +1,7 @@
 package scopePackage;
-import main.LineType;
 import variblePackage.Variable;
 import variblePackage.VariableException;
 import java.util.HashMap;
-import java.util.List;
 
 public class Scope {
 
