@@ -1,5 +1,7 @@
 package scopePackage;
 
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Sentence {
@@ -7,7 +9,12 @@ public enum Sentence {
             {public boolean processSentence(String line){
                 return true;//todo kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkpop
             }},
-    ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH){},
+    ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH){
+        public boolean processSentence(String line){
+            Matcher matcher=this.regex.matcher(line);
+            return matcher.matches();
+        }
+    },
     IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
     WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){},
@@ -59,6 +66,7 @@ public enum Sentence {
     }
 //todo  is this the proper way?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
     public static Sentence[] getScoping(ScoopPosition scopPosition){
+     //todo why i need this method.
         int counter=0;
         Sentence[] currentValues=Sentence.values();
         for (Sentence sentence:currentValues) {
