@@ -15,13 +15,48 @@ public enum Sentence {
             return matcher.matches();
         }
     },
-    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){},
-    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){},
-    METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){},
-    RETURN(Constants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE){},
-    REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE){},
-    BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH),
-    CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH);
+    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    RETURN(Constants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH) {
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    },
+    CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH) {
+        @Override
+        public boolean processSentence(String line) {
+            return false;
+        }
+    };
     //todo bracket or spaces?
     private final ScoopPosition scopPosition;
     private final Pattern regex;

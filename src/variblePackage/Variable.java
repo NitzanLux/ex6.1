@@ -6,7 +6,7 @@ public class Variable {
     private boolean isFinal = false;
     private VariableType variableType;
 
-    Variable(String type, String variableName, String value, boolean isFinal)
+    public Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
         this.variableType = VariableType.parseType(type);
         this.variableName = variableName;
@@ -44,6 +44,7 @@ public class Variable {
     void NameChecker(){
         //todo check if name is valid
         //(?:^[A-Za-z_]\w*[A-Za-z]{1,}\w*\b)*
+
     }
 
 

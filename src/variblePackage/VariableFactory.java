@@ -1,21 +1,25 @@
 package variblePackage;
 import scopePackage.Scope;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class VariableFactory {
 
-    private static final String COMMA = ",";
+    private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
+    private static final char SPACE = ' ';
     private static VariableFactory instance = new VariableFactory();
 
     private static LinkedList<Scope> currentStack;
 
     public static VariableFactory getInstance() {
         return instance;
+    }
+
+    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
+       if(isReassignment){
+           return reAssignment(line);
+       }
+       return makeAssignment(line);
     }
 
     private VariableFactory(){
@@ -27,89 +31,72 @@ public class VariableFactory {
     }
 
     /**
-     * variable creator
-     * @param line a code line
-     * @return a variable object fits the line
-     * @throws VariableException if
-     */
-    public Variable createVariable(String line) throws VariableException {
-        Pattern pattern = Pattern.compile("\\w+");
-        Matcher matcher = pattern.matcher(line);
-        List<String> foundMatches = new ArrayList<>();
-        while(matcher.find()){
-            foundMatches.add(matcher.group());
-        }
-        return getVariableFromList(foundMatches);
-    }
-
-    /**
-     *
-     * @param foundMatches is
-     * @return item
-     * @throws VariableException if
-     */
-    private Variable getVariableFromList(List<String> foundMatches) throws VariableException {
-        boolean isFinal = false;
-        int valStart;
-        String vType, vName, vValue = null;
-        List<String> varsValues;
-        if(foundMatches.get(0).equals("final")){
-            isFinal = true;
-            vType = foundMatches.get(1);
-            valStart = 2;
-        }
-        else {
-            vType = foundMatches.get(0);
-            valStart = 1;
-        }
-        varsValues = foundMatches.subList(valStart, foundMatches.size());
-        vName = varsValues.get(0);
-        if(varsValues.size() == 2){
-            vValue = varsValues.get(1);
-        }
-        return new Variable(vType, vName, vValue, isFinal);
-    }
-
-    /**
      * @param line code line
      * @return a variables array containing all variables in line.
      * @throws VariableException
      */
-    private static Variable[] multiAssignment(String line) throws VariableException {
+    private Variable[] makeAssignment(String line) throws VariableException {
         boolean isFinal = false;
-        line = line.split(";")[0];
-        if(line.startsWith("final ")){
+        LinkedList<String> strings = getListedVariables(line);
+        if(strings.get(0).equals(FINAL)){
             // if final declaration.
-            line = line.subSequence(6, line.length()).toString();
             isFinal = true;
+            strings.remove(0);
         }
+        return getVariables(isFinal, strings);
+    }
 
-        String[] splitLine = line.split(",");
-        //splitting the line by spaces
-        for(int i = 0; i < splitLine.length; i++){
-            if(splitLine[i].startsWith(" ")){
-                splitLine[i] = splitLine[i].substring(1);
+    private LinkedList<String> getListedVariables(String line){
+        line = line.split(SEMICOL)[0];
+        LinkedList<String> strings = new LinkedList<>();
+        int start = 0, end;
+        boolean b = false;
+        char[] charray = line.toCharArray();
+        for(int i = 0; i < charray.length; i++){
+            if(charray[i] != SPACE && !b){
+                start = i;
+                b = true;
             }
-            if(splitLine[i].endsWith(" ")){
-                splitLine[i] = splitLine[i].substring(0, splitLine[i].length() - 1);
+            else if (charray[i] == SPACE && b){
+                end = i;
+                b = false;
+                strings.add(String.copyValueOf(Arrays.copyOfRange(charray, start, end)));
             }
         }
-        String vType = splitLine[0].split(" ")[0];
-        //splits the allegedly type of variables out of the line
-        splitLine[0] = splitLine[0].split(vType + " ")[1];
-        //List<String[]> stringList = splitArrayBy(splitLine, ",");
-        //creates a linked list of string arrays containing everything that is not a space.
+        return strings;
+    }
+
+    /**
+     *
+     * @param isFinal
+     * @param strings
+     * @return
+     * @throws VariableException
+     */
+    private Variable[] getVariables(boolean isFinal, LinkedList<String> strings)
+            throws VariableException {
+        String vType = strings.get(0);
+        strings.remove(0);
+        String conStr = "";
+        for (String s: strings){
+            conStr = conStr.concat(s);
+        }
+        String[] splitLine = conStr.split(COMMA);
+        //splitting the line by commas
         LinkedList<String> names = new LinkedList<>();
         LinkedList<String> values = new LinkedList<>();
-        for(String sequence: splitLine){
-            names.add(sequence.split(" ")[0]);
-            if(sequence.split(" ").length == 3){
-                values.add(sequence.split(" ")[2]);
+        for (String s: splitLine){
+            if(s.lastIndexOf(EQUAL) != s.indexOf(EQUAL)){
+                throw new VariableException.IllegalVariableNameException();
+            }
+            String[] s1 = s.split(EQUAL);
+            names.add(s1[0]);
+            if(s1.length == 2){
+                values.add(s1[1]);
             }
             else{
                 values.add(null);
             }
-            //todo throw exception
         }
         Variable[] variables = new Variable[names.size()];
         for(int i = 0; i < variables.length; i++){
@@ -118,21 +105,17 @@ public class VariableFactory {
         return variables;
     }
 
-//    private static List<String[]> splitArrayBy(String[] array, String s){
-//        LinkedList<String[]> arrays = new LinkedList<String[]>();
-//        int start = 0;
-//        for(int i = 0; i < array.length; i++){
-//            if((array[i].equals(s) && i < array.length - 1) || i == array.length - 1){
-//                arrays.add(Arrays.copyOfRange(array, start, i));
-//                start = i + 1;
-////                for(String s: arrays)
-//            }
-////            else if(i == array.length - 1){
-////                arrays.add(Arrays.copyOfRange(array, start, i));
-////            }
-//        }
-//        return arrays;
-//    }
+    private Variable[] reAssignment(String line) throws VariableException {
+        LinkedList<String> strings = getListedVariables(line);
+        Variable[] variables = getVariables(false, strings);
+        for(Variable variable: variables){
+            if(!isLegalReAssignment(variable)){
+                throw new VariableException.NoVariableNameException();
+            }
+        }
+        return variables;
+    }
+
     // TODO: in case of reassignment loop running over all scopes in stack,
     // todo - checking for declaration of variable before, if its final, its type and if it exists
     private boolean isLegalReAssignment(Variable variable){
@@ -147,13 +130,12 @@ public class VariableFactory {
         }
         return false;
     }
-
-    public static void main(String[] args) throws VariableException {
-//        Variable v = createVariable("ab=BDNbbdj  ddsd  dvd0");
-        String line = "int nitzan = 0, eldar, david = 1;";
-        Variable[] vs = multiAssignment(line);
-        for(Variable v: vs){
-            System.out.println(v.getName());
-        }
-    }
+//
+//    public static void main(String[] args) throws VariableException {
+//        String line = "int a = 98;";
+//        Variable[] vs = makeAssignment(line);
+//        for(Variable v: vs){
+//            System.out.println(v.getName());
+//        }
+//    }
 }

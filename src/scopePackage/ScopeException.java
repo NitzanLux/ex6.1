@@ -1,7 +1,9 @@
 package scopePackage;
 
 public abstract class ScopeException extends Exception {
+
     private static final long serialVersionUID = 1L;
+
     ScopeException(String message) {
         super(message);
     }

@@ -56,12 +56,19 @@ public abstract class VariableException extends Exception{
         ValueNotMatchingTypeException() {
             super(VAL_ASGMNT_MSG);
         }
+
     }
-    static class FinalException extends VariableException{
-        FinalException(String massege){
+    static class IllegalVariableNameException extends VariableException.FinalException {
+        IllegalVariableNameException() {
+            super("Variable you tried to assign has illegal name");
+        }
+    }
+    static class FinalException extends VariableException {
+        FinalException(String massege) {
             super(massege);
         }
-        static class FinalAssignedAlradyException extends VariableException.FinalException{
+
+        static class FinalAssignedAlradyException extends VariableException.FinalException {
 
 
             private static final String VAL_FINAL_REASSIGMENT_MSG = "the final variable is already assigned";
@@ -76,7 +83,8 @@ public abstract class VariableException extends Exception{
                 super(VAL_FINAL_REASSIGMENT_MSG);
             }
         }
-        static class FinalNotAssignedException extends VariableException.FinalException{
+
+        static class FinalNotAssignedException extends VariableException.FinalException {
 
 
             private static final String VAL_FINAL_VALUE_ASSIGMENT_MSG =
@@ -92,7 +100,5 @@ public abstract class VariableException extends Exception{
                 super(VAL_FINAL_VALUE_ASSIGMENT_MSG);
             }
         }
-
-
     }
 }

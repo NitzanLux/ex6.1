@@ -1,7 +1,4 @@
 package main;
 
-public class lineProcessor {
-
-
-
+public class LineProcessor {
 }

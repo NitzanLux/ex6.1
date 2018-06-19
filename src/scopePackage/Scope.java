@@ -1,26 +1,26 @@
 package scopePackage;
+import main.LineType;
 import variblePackage.Variable;
 import variblePackage.VariableException;
-
 import java.util.HashMap;
 import java.util.List;
 
 public class Scope {
 
-    private HashMap<String,Variable> variables;
-    private boolean isMethod;
+     HashMap<String,Variable> variables;
+     private boolean isMethod;
 
-    public Scope(List<Variable> variables, boolean isMethod){
+     Scope(HashMap<String, Variable> variables, boolean isMethod){
         this.variables = new HashMap<>();
         this.isMethod = isMethod;
     }
 
-    public boolean isVariableAssigned(Variable variable){
+    private boolean isVariableAssigned(Variable variable){
         return (this.variables.containsKey(variable.getName()));
     }
 
-    public boolean isAllowedHere(Sentence sentence){
-        //TODO: check if sentence is allowed in specific scope
+    public boolean isAllowedHere(LineType lineType){
+        //TODO: check if lineType is allowed in specific scope
         return false;
     }
 
@@ -28,9 +28,9 @@ public class Scope {
         if (isVariableAssigned(variable)){
             throw new ScopeException.AlreadyAssignedException(variable.getName());
         }
-//        variables.add(variable);
+        variables.put(variable.getName(), variable);
     }
-    public void reAssigneVariable(String variableName,String value) throws VariableException {
+    public void reAssignVariable(String variableName,String value) throws VariableException {
         Variable variable=variables.get(variableName);
         if (variable!=null){
             variable.assignVariable(value);
