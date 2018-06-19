@@ -8,20 +8,28 @@ import java.util.LinkedList;
 
 public class MethodFactory {
 
-    private static MethodFactory instance;
-
+    private static MethodFactory instance=new MethodFactory();
+    private boolean isMethodCall;
     private String line;
-
+    private Scope papa;
     private Method method;
 
     public static MethodFactory getInstance() {
         return instance;
     }
 
-    private MethodFactory() throws VariableException {
-        this.method = new Method(getVariables(), getName());
+    private MethodFactory(){}
+
+    public void setPapa(Scope papa) {
+        this.papa = papa;
     }
 
+    public Method createMethod(String line) throws ScopeException.NoParentException {
+        if (papa==null){
+            throw new ScopeException.NoParentException();
+        }
+
+    }
     public void setLine(String line){
         this.line = line;
     }

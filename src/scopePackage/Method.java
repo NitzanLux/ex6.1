@@ -8,8 +8,8 @@ class Method extends Scope {
 
     private String methodName;
 
-     Method(HashMap<String, Variable> variables, String methodName) {
-        super(variables, true);
+     Method(HashMap<String, Variable> variables, String methodName,Scope father) {
+        super(variables, true, father);
         this.methodName = methodName;
         this.variables = variables;
     }

@@ -1,8 +1,6 @@
 package scopePackage;
 
-enum ConditionScope {
-    IF(Constants.IF_STR){},
-    WHILE(Constants.WHILE_STR){};
+public class ConditionScope extends Scope{
 
     boolean isLegalCondition(String condition){
      //TODO parse and check regex. Also check if variable checked fits value.
@@ -11,8 +9,14 @@ enum ConditionScope {
 
     private String condition;
 
-    ConditionScope(String scopeType){
-
+    public ConditionScope(){
+        super(null, false, null);
+        ///////////////     //////      ////////         //////
+              ///         ///    ///    ///    ///     ///    ///
+              ///         ///    ///    ///     ///    ///    ///
+              ///         ///    ///    ///     ///    ///    ///
+              ///         ///    ///    ///    ///     ///    ///
+              ///           //////       ////////        //////
     }
 
     private static class Constants {
