@@ -1,68 +1,101 @@
 package main;
 
 
+import scopePackage.MethodFactory;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum LineType {
     METHOD(Constants.METHOD_REGEX_STR, ScoopPosition.OUTTER_SCOPE)
             {public boolean processSentence(String line){
-                return true;//todo kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkpop
+                if (this.isMatch(line)){
+                    MethodFactory.getInstance().
+                    return true;
+                }
+                return false;
             }},
     ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH){
         public boolean processSentence(String line){
-            Matcher matcher=this.regex.matcher(line);
-            return matcher.matches();
+            if (this.isMatch(line)){
+
+                return true;
+            }
+            return false;
         }
     },
     IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     },
     WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     },
     RETURN(Constants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     },
     REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     },
     BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH) {
         @Override
         public boolean processSentence(String line) {
-            return false;
+            return this.isMatch(line);
         }
     },
     CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH) {
         @Override
         public boolean processSentence(String line) {
+            if (this.isMatch(line)){
+
+                return true;
+            }
             return false;
         }
     };
     //todo bracket or spaces?
-    private final ScoopPosition scopPosition;
+    private final ScoopPosition scopePosition;
     private final Pattern regex;
-    LineType(String regex, ScoopPosition scopPosition){
+    LineType(String regex, ScoopPosition scopePosition){
         this.regex=Pattern.compile(regex);
-        this.scopPosition=scopPosition;
+        this.scopePosition = scopePosition;
     }
     private enum ScoopPosition {
         INNER_SCOPE(false,true),
@@ -83,7 +116,10 @@ public enum LineType {
 
     }
     public abstract boolean processSentence(String line);
-
+    boolean isMatch(String line){
+        Matcher matcher=this.regex.matcher(line);
+        return matcher.matches();
+    }
 
 
 
@@ -105,14 +141,14 @@ public enum LineType {
         int counter=0;
         LineType[] currentValues= LineType.values();
         for (LineType sentence:currentValues) {
-            if (sentence.scopPosition==scopPosition){
+            if (sentence.scopePosition ==scopPosition){
                 counter++;
             }
         }
         LineType[] sentences=new LineType[counter];
         counter=0;
         for (LineType currentValue : currentValues) {
-            if (currentValue.scopPosition == scopPosition) {
+            if (currentValue.scopePosition == scopPosition) {
                 sentences[counter] = currentValue;
                 counter++;
             }
