@@ -1,9 +1,5 @@
 package scopePackage;
 
-import variblePackage.Variable;
-
-import javax.xml.bind.ValidationEvent;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,7 +7,7 @@ public class ConditionFactory {
 
     private String line;
 
-    private static ConditionScope instance = new ConditionScope();
+    private static ConditionFactory instance = new ConditionFactory();
 
     ///////////////     //////      ////////         //////
           ///         ///    ///    ///    ///     ///    ///
@@ -28,7 +24,12 @@ public class ConditionFactory {
         return instance;
     }
 
-    private List<String[]> parseCondition(){
+    /**
+     *
+     * @param line
+     * @return
+     */
+    private List<String[]> parseCondition(String line){
         String l = line.split("\\{")[0];
         l = l.split("\\(")[1];
         l = l.split("\\)")[0];
@@ -42,16 +43,17 @@ public class ConditionFactory {
                 strings[i] = strings[i].replace(" ", "");
             }
         }
+
         return variables;
     }
 
-    private boolean isLegalCondition(String[] variables){
-        for(String var: variables){
-            if(instance.isAllowedHere(var)){
-                if()
-            }
-        }
-    }
+//    private boolean isLegalCondition(String[] variables){
+//        for(String var: variables){
+//            if(instance.isAllowedHere(var)){
+//                if()
+//            }
+//        }
+//    }
 
 //    private List<String[]> splitByVar(String[] strings){
 //

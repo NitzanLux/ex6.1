@@ -28,7 +28,7 @@ public class MethodFactory {
         if (papa==null){
             throw new ScopeException.NoParentException();
         }
-
+        return null;
     }
     public void setLine(String line){
         this.line = line;
