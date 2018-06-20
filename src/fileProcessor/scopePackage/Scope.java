@@ -1,19 +1,20 @@
-package scopePackage;
-import variblePackage.Variable;
-import variblePackage.VariableException;
+package fileProcessor.scopePackage;
+import fileProcessor.variblePackage.Variable;
+import fileProcessor.variblePackage.VariableException;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class Scope {
 
      HashMap<String,Variable> variables;
-     private boolean isMethod;
      private Scope father;
 
-     Scope(HashMap<String, Variable> variables, boolean isMethod, Scope father){
-        this.variables = new HashMap<>();
-        this.isMethod = isMethod;
-        this. father = father;
+     Scope(HashMap<String, Variable> variables,Scope father){
+        this.variables = variables;
+        this.father=father;
+    }
+    Scope(){
+         this.variables=new HashMap<>();
+         this.father=null;
     }
 
     private boolean isVariableAssigned(Variable variable){
@@ -64,5 +65,9 @@ public class Scope {
 
     public Scope getFather() {
         return father;
+    }
+
+    public void setVariables(HashMap<String, Variable> variables) {
+        this.variables = variables;
     }
 }

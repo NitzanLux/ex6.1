@@ -1,33 +1,18 @@
-package scopePackage;
+package fileProcessor.scopePackage;
 
-import variblePackage.Variable;
-import variblePackage.VariableType;
+import fileProcessor.variblePackage.Variable;
+import fileProcessor.variblePackage.VariableType;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ConditionFactory {
+     private File file;
+     public ConditionFactory(File file){
+     this.file=file;
+     }
 
-    private String line;
-
-    private ConditionScope conditionScope;
-
-    private static ConditionFactory instance = new ConditionFactory();
-
-    ///////////////     //////      ////////         //////
-          ///         ///    ///    ///    ///     ///    ///
-          ///         ///    ///    ///     ///    ///    ///
-          ///         ///    ///    ///     ///    ///    ///
-          ///         ///    ///    ///    ///     ///    ///
-          ///           //////      ////////         //////
-
-    private ConditionFactory(){
-    }
-
-    public static ConditionFactory getInstance() {
-        return instance;
-    }
 
     /**
      *
@@ -53,7 +38,7 @@ public class ConditionFactory {
     }
 
     private boolean areVariablesLegit(List<String> variables){
-        Scope mama = this.conditionScope.getFather();
+        Scope mama = this.file.getCurrentScope();
         HashMap<String, Variable> fatherVars = mama.getVariables();
         VariableType[] legalTypes = {VariableType.INTEGER, VariableType.BOOLEAN, VariableType.BOOLEAN};
         while(mama != null){
@@ -73,13 +58,7 @@ public class ConditionFactory {
         return false;
     }
 
-    public void setConditionScope(ConditionScope conditionScope){
-        this.conditionScope = conditionScope;
-    }
 
-    public ConditionScope getConditionScope() {
-        return conditionScope;
-    }
 
     //    private boolean isLegalCondition(String[] variables){
 //        for(String var: variables){

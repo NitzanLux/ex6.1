@@ -1,4 +1,4 @@
-package variblePackage;
+package fileProcessor.variblePackage;
 
 public enum VariableType {
     INTEGER(Constants.INT) {

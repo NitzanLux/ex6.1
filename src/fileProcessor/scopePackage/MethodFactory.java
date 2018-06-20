@@ -1,40 +1,39 @@
-package scopePackage;
+package fileProcessor.scopePackage;
 
-import variblePackage.Variable;
-import variblePackage.VariableException;
+import fileProcessor.variblePackage.Variable;
+import fileProcessor.variblePackage.VariableException;
 
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 
 public class MethodFactory {
 
-    private static MethodFactory instance=new MethodFactory(null, null);
-    private boolean isMethodCall;
-    private Scope papa;
-    private Method method;
+    private File file;
+    private boolean isSecondTime = false;
 
-    public static MethodFactory getInstance() {
-        return instance;
+    public MethodFactory(File file){
+        this.file = file;
     }
 
-    private MethodFactory(Method method, Scope papa){
-        this.method = method;
-        this.papa = papa;
-    }
-
-    public void setPapa(Scope papa) {
-        this.papa = papa;
-    }
-
-    private Method createMethod(String line) throws ScopeException.NoParentException, VariableException {
+    public void createMethod(String line) throws ScopeException.NoParentException, VariableException {
         String methodName = getName(line);
         HashMap<String, Variable> variables = getVariables(line);
-        Scope father = this.papa;
-        return new Method(variables, methodName, father);
+        Method method=new Method(variables,methodName);
+        if(!isSecondTime){
+            this.file.addMethod(method);
+        }
+        else{
+            this.file.addScope(method);
+        }
     }
-
-
+    public void methodCall(String line){
+        //////////
+            ///
+            ///
+            ///
+            /// todo
+    }
     private String[] sliceLine(String line) {
         String[] sline = new String[2];
         String s = line.split("\\)")[0];
@@ -69,11 +68,12 @@ public class MethodFactory {
         return variables;
     }
 
-    public static void main(String[] args) throws VariableException {
-        String s = "static void make_cake(int milk, String eggs, boolean chocolate){";
+    boolean methodExistInHash(String methodName){
+        return this.file.getMethods().containsKey(methodName);
     }
 
-    public void setMethod(String line) throws VariableException, ScopeException.NoParentException {
-        this.method = createMethod(line);
+    public void setSecondTime() {
+        isSecondTime = true;
     }
+
 }

@@ -1,21 +1,19 @@
-package variblePackage;
-import scopePackage.Scope;
-import scopePackage.ScopeException;
+package fileProcessor.variblePackage;
+import fileProcessor.scopePackage.File;
+import fileProcessor.scopePackage.Scope;
+import fileProcessor.scopePackage.ScopeException;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class VariableFactory {
 
+    private File file;
+
     private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
     private static final char SPACE = ' ';
-    private static VariableFactory instance = new VariableFactory();
 
-    private static LinkedList<Scope> currentStack;
-
-    public static VariableFactory getInstance() {
-        return instance;
-    }
+    private Scope currentScope = file.getCurrentScope();
 
 //    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
 //       if(isReassignment){

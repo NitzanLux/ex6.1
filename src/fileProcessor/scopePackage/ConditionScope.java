@@ -1,7 +1,6 @@
-package scopePackage;
+package fileProcessor.scopePackage;
 
-import com.sun.xml.internal.ws.server.ServerRtException;
-import variblePackage.Variable;
+import fileProcessor.variblePackage.Variable;
 
 import java.util.HashMap;
 
@@ -19,7 +18,7 @@ public class ConditionScope extends Scope{
     private HashMap<String, Variable> variables;
 
     public ConditionScope(Scope father, HashMap<String, Variable> variables){
-        super(variables, false, father);
+        super(variables);
         ///////////////     //////      ////////         //////
               ///         ///    ///    ///    ///     ///    ///
               ///         ///    ///    ///     ///    ///    ///

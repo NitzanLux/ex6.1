@@ -1,4 +1,4 @@
-package scopePackage;
+package fileProcessor.scopePackage;
 
 public abstract class ScopeException extends Exception {
 

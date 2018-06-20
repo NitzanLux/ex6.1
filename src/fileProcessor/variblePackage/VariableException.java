@@ -1,4 +1,4 @@
-package variblePackage;
+package fileProcessor.variblePackage;
 
 public abstract class VariableException extends Exception{
     private static final long serialVersionUID = 1L;

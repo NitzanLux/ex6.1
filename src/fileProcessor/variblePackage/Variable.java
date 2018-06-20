@@ -1,4 +1,4 @@
-package variblePackage;
+package fileProcessor.variblePackage;
 
 public class Variable {
     private boolean isValueAssigned;
