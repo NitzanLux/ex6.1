@@ -1,8 +1,6 @@
 package scopePackage;
-
 import variblePackage.Variable;
 import variblePackage.VariableType;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +62,18 @@ public class ConditionFactory {
                             return true;
                         }
                     }
+                }
+                else if(variable == "true"||variable == "false"){
+                    return true;
+                }
+                else{
+                    try {
+                        Double.parseDouble(variable);
+                    }
+                    catch (NumberFormatException e){
+                        return false;
+                    }
+                    return true;
                 }
             }
             mama = mama.getFather();
