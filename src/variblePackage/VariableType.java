@@ -1,6 +1,6 @@
 package variblePackage;
 
-enum VariableType {
+public enum VariableType {
     INTEGER(Constants.INT) {
         boolean isFitValue(String value) {
             try {

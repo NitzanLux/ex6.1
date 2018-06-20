@@ -13,7 +13,7 @@ public class File {
 
     private Variable[] globalVariables;
 
-    private LinkedList scopes = new LinkedList<Scope>();
+    private LinkedList<Scope> scopes = new LinkedList<Scope>();
 
     private File(){
 
@@ -41,8 +41,12 @@ public class File {
         scopes.addFirst(scope);
     }
 
-    public Object getCurrentScope(){
+    public Scope getCurrentScope(){
         return scopes.getFirst();
+    }
+
+    public void endScope(Scope scope){
+        scopes.remove(scope);
     }
 
 }
