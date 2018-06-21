@@ -12,21 +12,36 @@ public class MethodFactory {
     private File file;
     private boolean isSecondTime = false;
 
+    /**
+     * constructor
+     * @param file
+     */
     public MethodFactory(File file){
         this.file = file;
     }
 
-    public void createMethod(String line) throws ScopeException.NoParentException, VariableException {
+    /**
+     * this method is called when we want to create new method
+     * @param line
+     * @throws VariableException
+     */
+    public void createMethod(String line) throws VariableException {
         String methodName = getName(line);
         HashMap<String, Variable> variables = getVariables(line);
-        Method method=new Method(variables,methodName);
-        if(!isSecondTime){
-            this.file.addMethod(method);
-        }
-        else{
+        Method method=new Method(variables, methodName);
+        if(isSecondTime){
             this.file.addScope(method);
         }
+        else{
+            this.file.addMethod(method);
+        }
     }
+
+    /**
+     * this method called when we call a method
+     * @param line
+     * @throws ScopeException
+     */
     public void methodCall(String line) throws ScopeException {
         String[] sline = sliceLine(line);
         if(file.getMethods().containsKey(sline[0])){
@@ -39,34 +54,48 @@ public class MethodFactory {
                     throw new ScopeException("variable " + var + " is not assigned!");
                 }
             }
-            //////////?????/////////
         }
-
-        //////////
-            ///
-            ///
-            ///
-            /// todo
+        else{
+            throw new ScopeException("Method " + sline[0] + " is undeclared");
+        }
     }
+
+    /**
+     * slices line and returns array size 2:
+     * one with method name, and one with variables
+     * @param line
+     * @return
+     */
     private String[] sliceLine(String line) {
         String[] sline = new String[2];
         String s = line.split("\\)")[0];
         String[] spl = s.split("\\(");
-        sline[0] = spl[0].split(" ")[1];
+        sline[0] = spl[0].split("\\s+")[1];
         sline[1] = spl[1];
         return sline;
     }
 
+    /**
+     * returns name of the method
+     * @param line
+     * @return
+     */
     private String getName(String line){
         return sliceLine(line)[0];
     }
 
+    /**
+     * returns hashmap with variables in method scope
+     * @param line
+     * @return
+     * @throws VariableException
+     */
     private HashMap<String, Variable> getVariables(String line) throws VariableException {
         String varLine = sliceLine(line)[1];
         String[] splitVars = varLine.split(",");
         LinkedList<String[]> strings = new LinkedList<String[]>();
         for(String s: splitVars){
-            strings.add(s.split(" "));
+            strings.add(s.split("\\s+"));
         }
         HashMap<String, Variable> variables = new HashMap<>(strings.size());
         for(String[] s: strings){
