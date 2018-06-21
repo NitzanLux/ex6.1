@@ -84,7 +84,7 @@ public class ConditionFactory {
     public void assignScope(String line) throws ScopeException {
         if(areVariablesLegit(getVariables(line))){
             HashMap<String, Variable> variables = new HashMap<>();
-            ConditionScope conditionScope = new ConditionScope(variables, file.getCurrentScope());
+            ConditionScope conditionScope = new ConditionScope(variables);
             file.addScope(conditionScope);
         }
         else {

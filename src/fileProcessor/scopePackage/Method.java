@@ -7,8 +7,9 @@ public class Method extends Scope {
 
     private String methodName;
     private boolean isReturn=false;
+    /**constructor*/
      Method(HashMap<String, Variable> variables, String methodName) {
-        super(variables, null);
+        super(variables);
 
          ///////////////     //////      ////////         //////
                ///         ///    ///    ///    ///     ///    ///

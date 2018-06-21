@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 public class ConditionScope extends Scope{
 
-    ConditionScope(HashMap variables, Scope father){
-        super(variables, father);
+    ConditionScope(HashMap variables){
+        super(variables);
     }
 
     @Override

@@ -14,27 +14,13 @@ public class VariableFactory {
     private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
     private static final char SPACE = ' ';
 
-    private Scope currentScope = file.getCurrentScope();
-
-//    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
-//       if(isReassignment){
-//           return reAssignment(line);
-//       }
-//       return makeAssignment(line);
-//    }
-
     private VariableFactory(){
 
     }
 
-//    public void setCurrentStack(LinkedList<Scope> stack){
-//        currentStack = stack;
-//    }
-
     /**
      * @param line code line
-     * @return a variables array containing all variables in line.
-     * @throws VariableException
+     * @throws VariableException or scope exception in cases assignment is illegal
      */
     public void makeAssignment(String line) throws VariableException, ScopeException {
         boolean isFinal = false;
@@ -71,11 +57,11 @@ public class VariableFactory {
     }
 
     /**
-     *
-     * @param isFinal
-     * @param strings
-     * @return
-     * @throws VariableException
+     * gets the variables from assignment line
+     * @param isFinal if is final
+     * @param strings the strings after parsing the line
+     * @return variables
+     * @throws VariableException if variables are not okay
      */
     private Variable[] getVariables(boolean isFinal, LinkedList<String> strings)
             throws VariableException {
@@ -121,14 +107,12 @@ public class VariableFactory {
     }
 
     /**
-     * insert varibels to current scop hashmap
+     * checks if
+     * @param variable
+     * @return
+     * @throws VariableException
      */
-    public void insertVariabels(String line){
-
-    }
-    // TODO: in case of reassignment loop running over all scopes in stack,
-    // todo - checking for declaration of variable before, if its final, its type and if it exists
-    private boolean isLegalReAssignment(Variable variable){
+    private boolean isLegalReAssignment(Variable variable) throws VariableException {
         String name = variable.getName();
         for(Scope current: file.getScopes()){
             if (current.getVariables().containsKey(name)){
@@ -137,7 +121,7 @@ public class VariableFactory {
                         && !originalVariable.isFinal());
             }
         }
-        return false;
+        throw new VariableException("Illegal reassignment");
     }
 //
 //    public static void main(String[] args) throws VariableException {

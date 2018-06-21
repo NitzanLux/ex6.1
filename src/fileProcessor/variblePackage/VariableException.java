@@ -1,6 +1,6 @@
 package fileProcessor.variblePackage;
 
-public abstract class VariableException extends Exception{
+public class VariableException extends Exception{
     private static final long serialVersionUID = 1L;
 
     /*
@@ -11,7 +11,7 @@ public abstract class VariableException extends Exception{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    private VariableException(String message) {
+    VariableException(String message) {
         super(message);
     }
 
