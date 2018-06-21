@@ -47,6 +47,9 @@ public class Variable {
 
     }
 
+    void setValueAssigned(){
+        isValueAssigned = true;
+    }
 
     public VariableType getVariableType() {
         return variableType;

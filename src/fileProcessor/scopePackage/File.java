@@ -16,6 +16,7 @@ public class File extends Scope {
 
     public void setValues(HashMap<String, Method> methods, Variable[] globalVariables) {
         this.methods = methods;
+        addScope(this);
     }
 
 

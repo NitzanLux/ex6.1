@@ -14,6 +14,8 @@ public class VariableFactory {
     private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
     private static final char SPACE = ' ';
 
+    private Scope currentScope = file.getCurrentScope();
+
     private VariableFactory(){
 
     }
@@ -95,7 +97,12 @@ public class VariableFactory {
         return variables;
     }
 
-    private Variable[] reAssignment(String line) throws VariableException {
+    /**
+     * reassigns Variables
+     * @param line code line
+     * @throws VariableException if theres problem with variabales
+     */
+    public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
         Variable[] variables = getVariables(false, strings);
         for(Variable variable: variables){
@@ -103,25 +110,27 @@ public class VariableFactory {
                 throw new VariableException.NoVariableNameException();
             }
         }
-        return variables;
     }
 
     /**
-     * checks if
+     * checks if variable assign is legal
      * @param variable
      * @return
-     * @throws VariableException
      */
-    private boolean isLegalReAssignment(Variable variable) throws VariableException {
+    private boolean isLegalReAssignment(Variable variable) {
         String name = variable.getName();
         for(Scope current: file.getScopes()){
             if (current.getVariables().containsKey(name)){
                 Variable originalVariable = current.getVariables().get(name);
-                return (originalVariable.getVariableType().equals(variable.getVariableType())
-                        && !originalVariable.isFinal());
+                if (originalVariable.getVariableType().equals(variable.getVariableType())
+                        && !originalVariable.isFinal()){
+                    originalVariable.setValueAssigned();
+                    return true;
+                }
+                return false;
             }
         }
-        throw new VariableException("Illegal reassignment");
+        return false;
     }
 //
 //    public static void main(String[] args) throws VariableException {
