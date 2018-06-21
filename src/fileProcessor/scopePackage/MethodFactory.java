@@ -9,9 +9,10 @@ import java.util.LinkedList;
 
 public class MethodFactory {
 
+    private static final int METHOD_PLACE_IN_SCOPE = 1;
     private File file;
     private boolean isSecondTime = false;
-
+    private Method currentMethod;
     /**
      * constructor
      * @param file
@@ -30,7 +31,8 @@ public class MethodFactory {
         HashMap<String, Variable> variables = getVariables(line);
         Method method=new Method(variables, methodName);
         if(isSecondTime){
-            this.file.addScope(method);
+            this.currentMethod=method;
+            this.file.addScope(this.currentMethod);
         }
         else{
             this.file.addMethod(method);
@@ -117,6 +119,11 @@ public class MethodFactory {
 
     public void setSecondTime() {
         isSecondTime = true;
+    }
+    public void methodReturn(){
+        if (file.getScopes().size()== METHOD_PLACE_IN_SCOPE&&currentMethod!=null){
+            currentMethod.setReturn();
+        }
     }
 
 }

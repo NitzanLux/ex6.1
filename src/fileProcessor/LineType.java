@@ -30,9 +30,9 @@ public enum LineType {
     },
     IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
-        public boolean processSentence(String line, ) {
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
             if (this.isMatch(line)){
-
+                fileAnalyzer.conditionFactory.assignScope(line);
                 return true;
             }
             return false;
@@ -40,19 +40,15 @@ public enum LineType {
     },
     WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
-        public boolean processSentence(String line) {
-            if (this.isMatch(line)){
-
-                return true;
-            }
-            return false;
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException {
+            return IF.processSentence(line,fileAnalyzer);
         }
     },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
-        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) {
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
             if (this.isMatch(line)){
-
+                fileAnalyzer.methodFactory.methodCall(line);
                 return true;
             }
             return false;
@@ -62,7 +58,7 @@ public enum LineType {
         @Override
         public boolean processSentence(String line,FileAnalyzer fileAnalyzer) {
             if (this.isMatch(line)){
-
+                fileAnalyzer.methodFactory.methodReturn();
                 return true;
             }
             return false;
@@ -70,9 +66,9 @@ public enum LineType {
     },
     REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
-        public boolean processSentence(String line) {
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) {
             if (this.isMatch(line)){
-
+                fileAnalyzer.variableFactory.
                 return true;
             }
             return false;

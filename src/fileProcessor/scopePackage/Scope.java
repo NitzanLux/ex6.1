@@ -3,7 +3,7 @@ import fileProcessor.variblePackage.Variable;
 import fileProcessor.variblePackage.VariableException;
 import java.util.HashMap;
 
-public class Scope {
+public abstract class Scope {
 
      HashMap<String,Variable> variables;
      private Scope father;
@@ -63,9 +63,11 @@ public class Scope {
         return variables;
     }
 
-    public Scope getFather() {
+    private Scope getFather() {
         return father;
     }
+
+    abstract boolean closeScope();
 
     public void setVariables(HashMap<String, Variable> variables) {
         this.variables = variables;
