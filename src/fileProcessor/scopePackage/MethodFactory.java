@@ -125,5 +125,12 @@ public class MethodFactory {
             currentMethod.setReturn();
         }
     }
+//    boolean methodExistInHash(String methodName){
+//        return this.file.getMethods().containsKey(methodName);
+//    }
+//
+//    public void setSecondTime() {
+//        isSecondTime = true;
+//    }
 
 }

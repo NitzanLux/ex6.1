@@ -76,10 +76,15 @@ public class ConditionFactory {
         return false;
     }
 
+    /**
+     * assigns new scope drives from line
+     * @param line code line
+     * @throws ScopeException if line is not legal
+     */
     public void assignScope(String line) throws ScopeException {
         if(areVariablesLegit(getVariables(line))){
             HashMap<String, Variable> variables = new HashMap<>();
-            ConditionScope conditionScope = new ConditionScope(variables, file.getCurrentScope());
+            ConditionScope conditionScope = new ConditionScope(variables);
             file.addScope(conditionScope);
         }
         else {
