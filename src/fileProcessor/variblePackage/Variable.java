@@ -1,16 +1,23 @@
 package fileProcessor.variblePackage;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Variable {
     private boolean isValueAssigned;
     private String variableName;
     private boolean isFinal = false;
     private VariableType variableType;
-
+    private static Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");//todo megic number
     public Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
-        this.variableType = VariableType.parseType(type);
-        this.variableName = variableName;
         this.isFinal = isFinal;
+        this.variableType = VariableType.parseType(type);
+        if (Variable.NameChecker(variableName)||variableName==null){
+            this.variableName = variableName;
+        }else {
+            throw new VariableException.NoVariableNameException();
+        }
         if(value != null){
             assignVariable(value);
         }
@@ -20,9 +27,7 @@ public class Variable {
         if (variableType == null) {
             throw new VariableException.TypeNotFoundException();
         }
-        if (variableName == null) {
-            throw new VariableException.NoVariableNameException();
-        }
+
     }
 
     public String getName(){
@@ -41,9 +46,9 @@ public class Variable {
         }
     }
 
-    void NameChecker(){
-        //todo check if name is valid
-        //(?:^[A-Za-z_]\w*[A-Za-z]{1,}\w*\b)*
+    private static boolean NameChecker(String variableName){
+        Matcher matcher=Variable.namePattern.matcher(variableName);
+        return matcher.matches();
 
     }
 

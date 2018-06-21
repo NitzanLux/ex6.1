@@ -15,12 +15,6 @@ public class ScopeException extends Exception {
             super(String.format(ALREADY_ASSIGNED_MSG, name));
         }
     }
-    public static class NoParentException extends ScopeException{
-        private static final String NO_PARENT_MSG = "no parent for methodFactory";
 
-        public NoParentException() {
-            super(NO_PARENT_MSG);
-        }
-    }
 
 }

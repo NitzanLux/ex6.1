@@ -8,19 +8,9 @@ public class Method extends Scope {
     private String methodName;
 
     private boolean isReturn=false;
-    Method(HashMap<String, Variable> variables, String methodName) {
-        super(variables, null);
     /**constructor*/
      Method(HashMap<String, Variable> variables, String methodName) {
-        super(variables);
-
-         ///////////////     //////      ////////         //////
-               ///         ///    ///    ///    ///     ///    ///
-               ///         ///    ///    ///     ///    ///    ///
-               ///         ///    ///    ///     ///    ///    ///
-               ///         ///    ///    ///    ///     ///    ///
-               ///           //////      ////////         //////
-
+         super(variables);
         this.methodName = methodName;
         this.variables = variables;
     }

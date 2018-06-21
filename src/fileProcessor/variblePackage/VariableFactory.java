@@ -16,8 +16,8 @@ public class VariableFactory {
 
     private Scope currentScope = file.getCurrentScope();
 
-    private VariableFactory(){
-
+    public VariableFactory(File file){
+        this.file=file;
     }
 
     /**

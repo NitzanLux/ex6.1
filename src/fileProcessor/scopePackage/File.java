@@ -6,12 +6,18 @@ import java.util.LinkedList;
 
 public class File extends Scope {
 
+
     private HashMap<String, Method> methods=new HashMap<>();
 
     private LinkedList<Scope> scopes = new LinkedList<Scope>();
 
     public File() {
         super();
+    }
+
+    @Override
+    boolean closeScope() {
+        return true;
     }
 
     public void setValues(HashMap<String, Method> methods, Variable[] globalVariables) {
@@ -46,8 +52,13 @@ public class File extends Scope {
         return false;
     }
 
-    public void endScope(Scope scope) {
-        scopes.remove(scope);
+    public void endScope() throws ScopeException {
+        Scope scope=scopes.getFirst();
+        if (scope.closeScope()){
+            scopes.remove(scope);
+        }else {
+            throw new ScopeException("");
+        }
     }
 
     public LinkedList<Scope> getScopes() {
