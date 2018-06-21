@@ -35,10 +35,15 @@ public abstract class Scope {
         return variables;
     }
 
+    private Scope getFather() {
+        return father;
+    }
 
 //    public boolean isClosabe(){
 //
 //    }
+
+    abstract boolean closeScope();
 
     public void setVariables(HashMap<String, Variable> variables) {
         this.variables = variables;

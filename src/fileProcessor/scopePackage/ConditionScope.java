@@ -14,10 +14,9 @@ public class ConditionScope extends Scope{
     public HashMap<String, Variable> getVariables() {
         return variables;
     }
+
+    @Override
+    boolean closeScope() {
+        return true;
+    }
 }
-///////////////     //////      ////////         //////
-      ///         ///    ///    ///    ///     ///    ///
-      ///         ///    ///    ///     ///    ///    ///
-      ///         ///    ///    ///     ///    ///    ///
-      ///         ///    ///    ///    ///     ///    ///
-      ///           //////       ////////        //////
