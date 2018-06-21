@@ -5,7 +5,7 @@ import fileProcessor.scopePackage.File;
 import fileProcessor.scopePackage.MethodFactory;
 import fileProcessor.variblePackage.VariableFactory;
 
-public class FileFactory {
+public class FileAnalyzer {
     File file=new File();
     MethodFactory methodFactory=new MethodFactory(file);
     ConditionFactory conditionFactory=new ConditionFactory(file);
