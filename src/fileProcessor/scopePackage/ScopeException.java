@@ -1,6 +1,6 @@
-package scopePackage;
+package fileProcessor.scopePackage;
 
-public abstract class ScopeException extends Exception {
+public class ScopeException extends Exception {
 
     private static final long serialVersionUID = 1L;
 

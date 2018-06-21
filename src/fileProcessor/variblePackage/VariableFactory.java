@@ -1,41 +1,42 @@
-package variblePackage;
-import scopePackage.Scope;
+package fileProcessor.variblePackage;
+import fileProcessor.scopePackage.File;
+import fileProcessor.scopePackage.Scope;
+import fileProcessor.scopePackage.ScopeException;
+
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class VariableFactory {
 
+    private File file;
+
     private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
     private static final char SPACE = ' ';
-    private static VariableFactory instance = new VariableFactory();
 
-    private static LinkedList<Scope> currentStack;
+    private Scope currentScope = file.getCurrentScope();
 
-    public static VariableFactory getInstance() {
-        return instance;
-    }
-
-    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
-       if(isReassignment){
-           return reAssignment(line);
-       }
-       return makeAssignment(line);
-    }
+//    public Variable[] getVariables(String line, boolean isReassignment) throws VariableException {
+//       if(isReassignment){
+//           return reAssignment(line);
+//       }
+//       return makeAssignment(line);
+//    }
 
     private VariableFactory(){
 
     }
 
-    public void setCurrentStack(LinkedList<Scope> stack){
-        currentStack = stack;
-    }
+//    public void setCurrentStack(LinkedList<Scope> stack){
+//        currentStack = stack;
+//    }
 
     /**
      * @param line code line
      * @return a variables array containing all variables in line.
      * @throws VariableException
      */
-    private Variable[] makeAssignment(String line) throws VariableException {
+    public void makeAssignment(String line) throws VariableException, ScopeException {
         boolean isFinal = false;
         LinkedList<String> strings = getListedVariables(line);
         if(strings.get(0).equals(FINAL)){
@@ -43,7 +44,10 @@ public class VariableFactory {
             isFinal = true;
             strings.remove(0);
         }
-        return getVariables(isFinal, strings);
+        Variable[] vars = getVariables(isFinal, strings);
+        for(Variable var: vars){
+            file.getCurrentScope().addVariable(var);
+        }
     }
 
     private LinkedList<String> getListedVariables(String line){
@@ -116,12 +120,17 @@ public class VariableFactory {
         return variables;
     }
 
+    /**
+     * insert varibels to current scop hashmap
+     */
+    public void insertVariabels(String line){
+
+    }
     // TODO: in case of reassignment loop running over all scopes in stack,
     // todo - checking for declaration of variable before, if its final, its type and if it exists
     private boolean isLegalReAssignment(Variable variable){
         String name = variable.getName();
-        Scope current = currentStack.getFirst();
-        while (current != null){
+        for(Scope current: file.getScopes()){
             if (current.getVariables().containsKey(name)){
                 Variable originalVariable = current.getVariables().get(name);
                 return (originalVariable.getVariableType().equals(variable.getVariableType())
