@@ -88,7 +88,7 @@ public class ConditionFactory {
             file.addScope(conditionScope);
         }
         else {
-            throw new ScopeException("illegal if/while line");
+            throw new ScopeException("illegal if/while line");//todo  not like thate make an exception
         }
     }
 
