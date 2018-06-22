@@ -104,7 +104,7 @@ public class MethodFactory {
                 isFinal = true;
                 index = 1;
             }
-            Variable v = new Variable(s[index], s[index+1], null, isFinal);
+            Variable v = new Variable(s[index], s[index+1], (String) null, isFinal);
             variables.put(v.getName(), v);
         }
         return variables;

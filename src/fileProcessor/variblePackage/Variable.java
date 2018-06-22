@@ -9,28 +9,38 @@ public class Variable {
     private String variableName;
     private boolean isFinal = false;
     private VariableType variableType;
-    private ArrayList<Variable> variablesThatPointer=new ArrayList<>();
     private static final Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");//todo megic number
+    public Variable(){
+
+    }
     public Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
+        setVariable(type,variableName,isFinal);
         if(value != null){
-                assignVariable(value);
-
+            assignVariable(value);
         }
         if (isFinal&&value==null){
             throw new VariableException.FinalException.FinalNotAssignedException();
         }
-
-        setVariable(type,variableName,isFinal);
+        if (variableType == null) {
+            throw new VariableException.TypeNotFoundException();
+        }
 
     }
     public Variable(String type, String variableName,Variable variableRefernce, boolean isFinal)
             throws VariableException{
-        this.isValueAssigned=variableRefernce.isValueAssigned;
-        variableRefernce.variablesThatPointer.add(this);
         setVariable(type,variableName,isFinal);
+        this.isValueAssigned=variableRefernce.isValueAssigned;
+        if (isFinal&&!isValueAssigned){
+            throw new VariableException.FinalException.FinalNotAssignedException();
+        }
+        if (variableType == null) {
+            throw new VariableException.TypeNotFoundException();
+        }
+
+
     }
-    public void setVariable(String type, String variableName, boolean isFinal) throws VariableException {
+    private void setVariable(String type, String variableName, boolean isFinal) throws VariableException {
         this.isFinal = isFinal;
         this.variableType = VariableType.parseType(type);
         if (Variable.NameChecker(variableName)||variableName==null){
@@ -39,9 +49,6 @@ public class Variable {
             throw new VariableException.NoVariableNameException();
         }
 
-        if (variableType == null) {
-            throw new VariableException.TypeNotFoundException();
-        }
 
     }
 
@@ -55,9 +62,6 @@ public class Variable {
         }
         if(variableType.isFitValue(value)){
             isValueAssigned = true;
-            for (Variable variable:variablesThatPointer) {//update all pointers
-                variable.isValueAssigned=true;
-            }
         }else{
             throw new VariableException.ValueNotMatchingTypeException();
         }
