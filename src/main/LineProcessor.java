@@ -1,6 +1,7 @@
 package main;
 
 import fileProcessor.FileAnalyzer;
+import fileProcessor.NoSuchLineException;
 import fileProcessor.scopePackage.ScopeException;
 import fileProcessor.variblePackage.VariableException;
 
@@ -23,7 +24,7 @@ public class LineProcessor {
         for (String line:sjavaData) {
             try {
                 fileAnalyzer.anlayzeLine(line);
-            } catch (VariableException | ScopeException e) {
+            } catch (VariableException | ScopeException |NoSuchLineException e) {
                 System.err.println(e.getMessage());
             }
         }

@@ -12,7 +12,6 @@ public class Method extends Scope {
      Method(HashMap<String, Variable> variables, String methodName) {
          super(variables);
         this.methodName = methodName;
-        this.variables = variables;
     }
 
     String getMethodName() {

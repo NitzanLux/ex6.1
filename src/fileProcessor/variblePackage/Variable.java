@@ -10,9 +10,7 @@ public class Variable {
     private boolean isFinal = false;
     private VariableType variableType;
     private static final Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");//todo megic number
-    public Variable(){
 
-    }
     public Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
         setVariable(type,variableName,isFinal);
@@ -20,7 +18,7 @@ public class Variable {
             assignVariable(value);
         }
         if (isFinal&&value==null){
-            throw new VariableException.FinalException.FinalNotAssignedException();
+            throw new VariableException.FinalException.FinalNotAssignedException(variableName);
         }
         if (variableType == null) {
             throw new VariableException.TypeNotFoundException();
@@ -32,7 +30,7 @@ public class Variable {
         setVariable(type,variableName,isFinal);
         this.isValueAssigned=variableRefernce.isValueAssigned;
         if (isFinal&&!isValueAssigned){
-            throw new VariableException.FinalException.FinalNotAssignedException();
+            throw new VariableException.FinalException.FinalNotAssignedException(variableName);
         }
         if (variableType == null) {
             throw new VariableException.TypeNotFoundException();

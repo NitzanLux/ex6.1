@@ -66,11 +66,10 @@ public class MethodFactory {
      * @return
      */
     private String[] sliceLine(String line) {
-        String[] sline = new String[2];
-        String s = line.split("\\)")[0];
-        String[] spl = s.split("\\(");
-        sline[0] = spl[0].split("\\s+")[1];
-        sline[1] = spl[1];
+        String[] sline;
+        line.substring(0,line.indexOf("("));
+        sline=line.split("\\s*\\(");
+        sline[0] = sline[0].split("\\s+")[1];
         return sline;
     }
 

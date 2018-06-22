@@ -27,16 +27,14 @@ public class FileAnalyzer {
     VariableFactory getVariableFactory() {
         return variableFactory;
     }
-    public void anlayzeLine(String line) throws VariableException, ScopeException {
-        boolean isLineLegal=false;
+    public void anlayzeLine(String line) throws VariableException, ScopeException, NoSuchLineException {
         for (LineType lineType: LineType.values ()){
             if (lineType.processSentence(line,this)){
-                isLineLegal=true;
+                return;
             }
         }
-        if (!isLineLegal){
-            //Todo throw something
-        }
+        throw new NoSuchLineException();
+
     }
 
 }

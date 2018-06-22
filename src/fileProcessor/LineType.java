@@ -33,17 +33,13 @@ public enum LineType {
     IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
-            if (this.isMatch(line)){
-                fileAnalyzer.getConditionFactory().assignScope(line);
-                return true;
-            }
-            return false;
+            return coditisionProcessor(line,fileAnalyzer);
         }
     },
     WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException, VariableException {
-                return IF.processSentence(line,fileAnalyzer);
+                return coditisionProcessor(line,fileAnalyzer);
         }
     },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
@@ -124,16 +120,24 @@ public enum LineType {
         return matcher.matches();
     }
 
-
+    boolean coditisionProcessor(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
+        if (this.isMatch(line)){
+            fileAnalyzer.getConditionFactory().assignScope(line);
+            return true;
+        }
+        return false;
+    }
 
     private static class Constants {
         private static final String IF_STATMENT = "if";
         private static final String WHILE_STATMENT = "while";
-        private static final String RETURN_REGEX_STR = "^[ ]*return\\;[ ]*$";
-        private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:[\\w]+" +
-                "[ \\t]*(?:\\,[ \\t]*[\\w]+[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
-        private static final String CONDITION_REGEX_STR = "^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:" +
-                "[ \\t]*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
+        private static final String RETURN_REGEX_STR = "^[ \\t]*return\\;[ \\t]*$";
+        private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:(?:\\\".*\\\")" +
+                "|\\w+)(?:[ \\t]*(?:\\,[ \\t]*(?:(?:\\\".*\\\")|\\w+)[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
+        private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
+                //"^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]*" +
+                //"(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
+
         private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal" +
                 "\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
                 "[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=" +
@@ -145,8 +149,9 @@ public enum LineType {
         private static final String REASSIGNMENT_REGEX_STR = "^[ \\t]*\\w+[ \\t]*\\=[ \\t]*" +
                 "(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
                 "[\\S])+)*[ \\t]*\\;[ \\t]*$";
-        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[\\s]*$";
+        private static final String BLANK_LINE_REGEX_STR = "^(?:\\/{2}.*)?[\\s]*$";
         private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
+
 }
 

@@ -27,15 +27,17 @@ public class VariableFactory {
      * @throws VariableException or scope exception in cases assignment is illegal
      */
     public void makeAssignment(String line) throws VariableException, ScopeException {
-        boolean isFinal = false;
         LinkedList<String> strings = getListedVariables(line);
 //        if (strings.get(0).equals(FINAL)) {
 //            // if final declaration.
 //            isFinal = true;
 //            strings.remove(0);
 //        }
-        Variable[] vars = getVariables(isFinal, strings);
+        Variable[] vars = getVariables(strings);
         for (Variable var : vars) {
+            if (var == null) {
+                System.out.printf("");
+            }
             file.getCurrentScope().addVariable(var);
         }
     }
@@ -70,43 +72,38 @@ public class VariableFactory {
     /**
      * gets the variables from assignment line
      *
-     * @param isFinal if is final
      * @param strings the strings after parsing the line
      * @return variables
      * @throws VariableException if variables are not okay
      */
-    private Variable[] getVariables(boolean isFinal, LinkedList<String> strings) throws VariableException {
-        Variable[] variables=new Variable[strings.size()];
-        int counter=0;
+    private Variable[] getVariables(LinkedList<String> strings) throws VariableException {
+        Variable[] variables = new Variable[strings.size()];
+        int counter = 0;
         for (String variable : strings) {
-            int firstIndex=0;
+            int firstIndex = 0;
             boolean isAssigned = false;
             if (variable.contains("=")) {
                 isAssigned = true;
             }
             String[] variableData = variable.split("\\s+\\=?\\s*");
+            String value = null;
+            if (isAssigned) {
+                value = variableData[variableData.length - 1];
+            }
             boolean isItFinal = false;
             if (variableData[0].equals("final")) {
                 isItFinal = true;
                 firstIndex++;
             }
-            String value = null;
-            if (isAssigned) {
-                value=variableData[variableData.length-1];
-            }
-            if (!VariableType.isType(value)){
-                if (variableToVaribleAssignmentLeagel(variableData[1+firstIndex],value)) {
-                    Variable variableRefernce=getVariable(value);
-                    variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],variableRefernce, isItFinal);
-                }else {
+            if (isAssigned&&!VariableType.isType(value)) {
+                if (variableToVaribleAssignmentLeagel(variableData[0 + firstIndex], value)) {
+                    Variable variableRefernce = getVariable(value);
+                    variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex], variableRefernce, isItFinal);
+                } else {
                     //todo throw exception.
                 }
-            }else {
-                String ss=variableData[firstIndex];
-                String ddd=variableData[1+firstIndex];
-                String val=value;
-                boolean isIf=isItFinal;
-                Variable v=new Variable();
+
+            } else {
                 variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex], value, isItFinal);
             }
             counter++;
@@ -152,7 +149,7 @@ public class VariableFactory {
      */
     public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
-        Variable[] variables = getVariables(false, strings);
+        Variable[] variables = getVariables(strings);
         for (Variable variable : variables) {
             if (!isLegalReAssignment(variable)) {
                 throw new VariableException.NoVariableNameException();
@@ -181,7 +178,8 @@ public class VariableFactory {
         }
         return false;
     }
-    private Variable getVariable(String variable){
+
+    private Variable getVariable(String variable) {
         for (Scope current : file.getScopes()) {
             if (current.getVariables().containsKey(variable)) {
                 return current.getVariables().get(variable);
@@ -189,7 +187,8 @@ public class VariableFactory {
         }
         return null;
     }
-    private boolean variableToVaribleAssignmentLeagel(String variableAssignedType,String variableAssigningKey) {
+
+    private boolean variableToVaribleAssignmentLeagel(String variableAssignedType, String variableAssigningKey) {
         Variable variableAssigning = getVariable(variableAssigningKey);
         return variableAssigning != null && VariableType.isTypeMatch(variableAssignedType, variableAssigning);
     }

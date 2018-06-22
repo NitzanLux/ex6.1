@@ -80,13 +80,13 @@ public enum VariableType {
         if (variableAsgining.getVariableType()==variableAsgining.getVariableType()){
             return true;
         }
-        VariableType assingnedType=getVariableType(variableAssignedType);
-        if (assingnedType==null){
+        VariableType assognedType=getVariableType(variableAssignedType);
+        if (assognedType==null){
             return false;
         }
-        if (assingnedType==VariableType.DOUBLE){
+        if (assognedType==VariableType.DOUBLE){
             return variableAsgining.getVariableType() == VariableType.INTEGER;
-        }else if (assingnedType==VariableType.BOOLEAN){
+        }else if (assognedType==VariableType.BOOLEAN){
             return variableAsgining.getVariableType() == VariableType.INTEGER||variableAsgining.getVariableType()
                     == VariableType.DOUBLE;
         }

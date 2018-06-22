@@ -88,7 +88,7 @@ public class VariableException extends Exception{
 
 
             private static final String VAL_FINAL_VALUE_ASSIGMENT_MSG =
-                    "the final variable you tried to assigned has no value";
+                    "the final variable you tried to assigned (%s) has no value";
 
             /*
              * Constructs a new exception with the specified detail message.  The
@@ -96,8 +96,8 @@ public class VariableException extends Exception{
              * a call to {@link #initCause}.
              *
              */
-            FinalNotAssignedException() {
-                super(VAL_FINAL_VALUE_ASSIGMENT_MSG);
+            FinalNotAssignedException(String variableName) {
+                super(String.format(VAL_FINAL_VALUE_ASSIGMENT_MSG, variableName));
             }
         }
     }
