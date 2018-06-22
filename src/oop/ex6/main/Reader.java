@@ -5,7 +5,13 @@ import java.util.ArrayList;
 
 import static java.nio.file.Files.readAllLines;
 
+/**
+ * a single tone class which read the file from a given path.
+ */
 class Reader {
+    /*
+    instance
+     */
     private static Reader instance=new Reader();
 
     private Reader(){
