@@ -35,7 +35,7 @@ public class Reader {
                     counter++;
                 }
             }catch (IOException e) {
-                throw e;//todo send proper exception.
+                throw e;
             }
             return sjavaData;
     }

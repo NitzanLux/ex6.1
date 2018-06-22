@@ -1,18 +1,21 @@
 package fileProcessor.scopePackage;
 
 import fileProcessor.variblePackage.Variable;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class File extends Scope {
 
 
-    private HashMap<String, Method> methods=new HashMap<>();
+    private static final int FILE_IN_SCOPE = 1;
+    private HashMap<String, Method> methods = new HashMap<>();
 
     private LinkedList<Scope> scopes = new LinkedList<Scope>();
 
     public File() {
         super();
+        addScope(this);
     }
 
     @Override
@@ -20,22 +23,16 @@ public class File extends Scope {
         return true;
     }
 
-    public void setValues(HashMap<String, Method> methods, Variable[] globalVariables) {
-        this.methods = methods;
-        addScope(this);
-    }
-
-
-    public HashMap getMethods() {
+    HashMap getMethods() {
         return methods;
     }
 
 
-    public void addScope(Scope scope) {
+    void addScope(Scope scope) {
         scopes.addFirst(scope);
     }
 
-    public void addMethod(Method method){
+    void addMethod(Method method) {
         this.methods.put(method.getMethodName(), method);
     }
 
@@ -43,9 +40,9 @@ public class File extends Scope {
         return scopes.getFirst();
     }
 
-    public boolean isVariableAssigned(String variable){
-        for(Scope scope:scopes){
-            if(scope.getVariables().containsKey(variable)){
+    boolean isVariableAssigned(String variable) {
+        for (Scope scope : scopes) {
+            if (scope.getVariables().containsKey(variable)) {
                 return true;
             }
         }
@@ -53,10 +50,11 @@ public class File extends Scope {
     }
 
     public void endScope() throws ScopeException {
-        Scope scope=scopes.getFirst();
-        if (scope.closeScope()){
+        Scope scope = null;
+        scope = scopes.getFirst();
+        if (scope.closeScope()&&scopes.size()> FILE_IN_SCOPE) {
             scopes.remove(scope);
-        }else {
+        } else {
             throw new ScopeException("");
         }
     }

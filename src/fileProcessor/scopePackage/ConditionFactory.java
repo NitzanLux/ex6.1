@@ -29,10 +29,9 @@ public class ConditionFactory {
         String l = line.split("\\{")[0];
         l = l.split("\\(")[1];
         l = l.split("\\)")[0];
-        String[] vars = l.split("\\||");
+        String[] vars = l.split("(?:\\|\\|)|(?:\\&\\&)");
         List<String> variables = new LinkedList<>();
         for(String s: vars){
-            for(String str: s.split("&&"))
             variables.add(s.replaceAll("\\s+", ""));
         }
         return variables;

@@ -23,7 +23,7 @@ public enum VariableType {
     },
     STRING(Constants.STRING1) {
         boolean isFitValue(String value) {
-            return true;
+            return value.startsWith("\"")&&value.endsWith("\"");
         }
     },
     CHAR(Constants.CHAR1) {
@@ -67,5 +67,37 @@ public enum VariableType {
         private static final String BOOLEAN1 = "boolean";
         private static final String TRUE = "true";
         private static final String FALSE = "false";
+    }
+    public static boolean isType(String typeKey){
+        for (VariableType variableType:VariableType.values()) {
+            if(variableType.isFitValue(typeKey)){
+                return true;
+            }
+        }
+        return false;
+    }
+    static boolean isTypeMatch(String variableAssignedType,Variable variableAsgining){
+        if (variableAsgining.getVariableType()==variableAsgining.getVariableType()){
+            return true;
+        }
+        VariableType assingnedType=getVariableType(variableAssignedType);
+        if (assingnedType==null){
+            return false;
+        }
+        if (assingnedType==VariableType.DOUBLE){
+            return variableAsgining.getVariableType() == VariableType.INTEGER;
+        }else if (assingnedType==VariableType.BOOLEAN){
+            return variableAsgining.getVariableType() == VariableType.INTEGER||variableAsgining.getVariableType()
+                    == VariableType.DOUBLE;
+        }
+        return false;
+    }
+    private static VariableType getVariableType(String typeKey){
+        for (VariableType currentType:VariableType.values()){
+            if (currentType.typeKey.equals(typeKey)){
+                return currentType;
+            }
+        }
+        return null;
     }
 }

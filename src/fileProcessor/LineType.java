@@ -30,27 +30,27 @@ public enum LineType {
             return false;
         }
     },
-//    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
-//        @Override
-//        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
-//            if (this.isMatch(line)){
-//                fileAnalyzer.getConditionFactory().assignScope(line);
-//                return true;
-//            }
-//            return false;
-//        }
-//    },
-//    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
-//        @Override
-//        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException, VariableException {
-//                return IF.processSentence(line,fileAnalyzer);
-//        }
-//    },
+    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
+            if (this.isMatch(line)){
+                fileAnalyzer.getConditionFactory().assignScope(line);
+                return true;
+            }
+            return false;
+        }
+    },
+    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
+        @Override
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException, VariableException {
+                return IF.processSentence(line,fileAnalyzer);
+        }
+    },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
             if (this.isMatch(line)){
-                fileAnalyzer.getMethodFactory().methodCall(line);
+                fileAnalyzer.getMethodFactory().addMethodCall(line);
                 return true;
             }
             return false;
@@ -79,7 +79,7 @@ public enum LineType {
     BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH) {
         @Override
         public boolean processSentence(String line,FileAnalyzer fileAnalyzer) {
-            return this.isMatch(line);
+            return (this.isMatch(line)||line==null);
         }
     },
     CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH) {
@@ -132,8 +132,8 @@ public enum LineType {
         private static final String RETURN_REGEX_STR = "^[ ]*return\\;[ ]*$";
         private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:[\\w]+" +
                 "[ \\t]*(?:\\,[ \\t]*[\\w]+[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
-        private static final String CONDITION_REGEX_STR = "^[ \\t]*%s[ \\t]*\\([ \\t]*\\w+(?:\\.?\\w+)" +
-                "?[ \\t]*(?:(?:(?:\\|\\|)|(?:\\&\\&))[ \\t]*\\w+(?:\\.?\\w+)?[ \\t]*)*\\)[ \\t]*{[ \\t]*$";
+        private static final String CONDITION_REGEX_STR = "^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:" +
+                "[ \\t]*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
         private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal" +
                 "\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
                 "[\\S])+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=" +
@@ -145,32 +145,8 @@ public enum LineType {
         private static final String REASSIGNMENT_REGEX_STR = "^[ \\t]*\\w+[ \\t]*\\=[ \\t]*" +
                 "(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
                 "[\\S])+)*[ \\t]*\\;[ \\t]*$";
-        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[\\r]*$";
+        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[\\s]*$";
         private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
-//    //todo  is this the proper way?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-//    public static LineType[] getScoping(ScoopPosition scopPosition){
-//        //todo why i need this method.
-//        int counter=0;
-//        LineType[] currentValues= LineType.values();
-//        for (LineType sentence:currentValues) {
-//            if (sentence.scopePosition ==scopPosition){
-//                counter++;
-//            }
-//        }
-//        LineType[] sentences=new LineType[counter];
-//        counter=0;
-//        for (LineType currentValue : currentValues) {
-//            if (currentValue.scopePosition == scopPosition) {
-//                sentences[counter] = currentValue;
-//                counter++;
-//            }
-//        }
-//        return sentences;
-//    }
-//
-//    public static void main(String[] args) {
-//        System.out.println("^\\w+[ ]*=[ ]*\\w+\\; *$");
-//    }
 }
 

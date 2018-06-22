@@ -4,6 +4,7 @@ import fileProcessor.variblePackage.Variable;
 import fileProcessor.variblePackage.VariableException;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -11,8 +12,8 @@ public class MethodFactory {
 
     private static final int METHOD_PLACE_IN_SCOPE = 1;
     private File file;
-    private boolean isSecondTime = false;
     private Method currentMethod;
+    private ArrayList<String> methodsCalls=new ArrayList<>();
     /**
      * constructor
      * @param file
@@ -30,13 +31,9 @@ public class MethodFactory {
         String methodName = getName(line);
         HashMap<String, Variable> variables = getVariables(line);
         Method method=new Method(variables, methodName);
-        if(isSecondTime){
+            this.file.addMethod(method);
             this.currentMethod=method;
             this.file.addScope(this.currentMethod);
-        }
-        else{
-            this.file.addMethod(method);
-        }
     }
 
     /**
@@ -117,13 +114,21 @@ public class MethodFactory {
         return this.file.getMethods().containsKey(methodName);
     }
 
-    public void setSecondTime() {
-        isSecondTime = true;
-    }
     public void methodReturn(){
-        if (file.getScopes().size()== METHOD_PLACE_IN_SCOPE&&currentMethod!=null){
+        if (file.getScopes().size()== METHOD_PLACE_IN_SCOPE+1&&currentMethod!=null){
             currentMethod.setReturn();
         }
+    }
+    public boolean cheakMethodCalls(){
+        for (String line:methodsCalls) {
+            if (!methodExistInHash(line)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public void addMethodCall(String line){
+        methodsCalls.add(line);
     }
 //    boolean methodExistInHash(String methodName){
 //        return this.file.getMethods().containsKey(methodName);

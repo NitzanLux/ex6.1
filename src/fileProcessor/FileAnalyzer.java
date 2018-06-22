@@ -13,10 +13,10 @@ public class FileAnalyzer {
     private ConditionFactory conditionFactory=new ConditionFactory(file);
     private VariableFactory variableFactory=new VariableFactory(file);
 
-    public File getFile() {
+    File getFile() {
         return file;
     }
-    public ConditionFactory getConditionFactory() {
+    ConditionFactory getConditionFactory() {
         return conditionFactory;
     }
 
@@ -24,7 +24,7 @@ public class FileAnalyzer {
         return methodFactory;
     }
 
-    public VariableFactory getVariableFactory() {
+    VariableFactory getVariableFactory() {
         return variableFactory;
     }
     public void anlayzeLine(String line) throws VariableException, ScopeException {
@@ -38,4 +38,5 @@ public class FileAnalyzer {
             //Todo throw something
         }
     }
+
 }

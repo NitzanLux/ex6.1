@@ -8,25 +8,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class LineProcessor {
+
+    private static final int IO_ERROR_MSG = 2;
+
     public static void main(String[] args) {
         ArrayList<String> sjavaData=new ArrayList<>();
         try {
             sjavaData=Reader.getInstance().readLines(args[0]);
         } catch (IOException e) {
-            //todo messege;
+            System.err.println(IO_ERROR_MSG);
+            System.exit(0);//todo exit is good?
         }
         FileAnalyzer fileAnalyzer=new FileAnalyzer();
         for (String line:sjavaData) {
             try {
                 fileAnalyzer.anlayzeLine(line);
-                System.out.println(0);
-            } catch (VariableException e) {
-                System.out.println();
-//                e.printStackTrace();//todo somthing (proper msg)
-            } catch (ScopeException e) {
-//                e.printStackTrace();//todo somthing  (proper msg)
+            } catch (VariableException | ScopeException e) {
+                System.err.println(e.getMessage());
             }
         }
+        fileAnalyzer.getMethodFactory().cheakMethodCalls();
+        }
+
     }
 
-}
+
