@@ -1,6 +1,5 @@
-package fileProcessor.variblePackage;
+package oop.ex6.fileProcessor.variblePackage;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,9 +8,9 @@ public class Variable {
     private String variableName;
     private boolean isFinal = false;
     private VariableType variableType;
-    private static final Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");//todo megic number
+    private static final Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");
 
-    public Variable(String type, String variableName, String value, boolean isFinal)
+    Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
         setVariable(type,variableName,isFinal);
         if(value != null){
@@ -25,10 +24,10 @@ public class Variable {
         }
 
     }
-    public Variable(String type, String variableName,Variable variableRefernce, boolean isFinal)
+    Variable(String type, String variableName, boolean isValueAssigned, boolean isFinal)
             throws VariableException{
         setVariable(type,variableName,isFinal);
-        this.isValueAssigned=variableRefernce.isValueAssigned;
+        this.isValueAssigned=isValueAssigned;
         if (isFinal&&!isValueAssigned){
             throw new VariableException.FinalException.FinalNotAssignedException(variableName);
         }
@@ -38,14 +37,15 @@ public class Variable {
 
 
     }
+
+    boolean isValueAssigned() {
+        return isValueAssigned;
+    }
+
     private void setVariable(String type, String variableName, boolean isFinal) throws VariableException {
         this.isFinal = isFinal;
         this.variableType = VariableType.parseType(type);
-        if (Variable.NameChecker(variableName)||variableName==null){
-            this.variableName = variableName;
-        }else {
-            throw new VariableException.NoVariableNameException();
-        }
+        setVariableName(variableName);
 
 
     }
@@ -65,9 +65,13 @@ public class Variable {
         }
     }
 
-    private static boolean NameChecker(String variableName){
+    private void setVariableName(String variableName) throws VariableException.NoVariableNameException {
         Matcher matcher=Variable.namePattern.matcher(variableName);
-        return matcher.matches();
+        if (matcher.matches()){
+            this.variableName=variableName;
+        }else {
+            throw new VariableException.NoVariableNameException();
+        }
 
     }
 

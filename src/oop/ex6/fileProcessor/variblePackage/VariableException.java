@@ -1,4 +1,4 @@
-package fileProcessor.variblePackage;
+package oop.ex6.fileProcessor.variblePackage;
 
 public class VariableException extends Exception{
     private static final long serialVersionUID = 1L;
@@ -98,6 +98,17 @@ public class VariableException extends Exception{
              */
             FinalNotAssignedException(String variableName) {
                 super(String.format(VAL_FINAL_VALUE_ASSIGMENT_MSG, variableName));
+            }
+        }
+        static class AssertionTypeIncompatibleException extends VariableException.FinalException {
+
+
+            private static final String TYPE_ASSERTION_ERROR_MSG =
+                    "the variable for reference is not compatible with the assigning variable type";
+
+
+            AssertionTypeIncompatibleException() {
+                super(TYPE_ASSERTION_ERROR_MSG);
             }
         }
     }

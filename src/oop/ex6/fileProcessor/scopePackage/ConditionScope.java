@@ -1,12 +1,12 @@
-package fileProcessor.scopePackage;
+package oop.ex6.fileProcessor.scopePackage;
 
-import fileProcessor.variblePackage.Variable;
+import oop.ex6.fileProcessor.variblePackage.Variable;
 
 import java.util.HashMap;
 
 public class ConditionScope extends Scope{
 
-    ConditionScope(HashMap variables){
+    ConditionScope(HashMap<String, Variable> variables){
         super(variables);
     }
 

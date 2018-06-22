@@ -1,6 +1,6 @@
-package fileProcessor.scopePackage;
-import fileProcessor.variblePackage.Variable;
-import fileProcessor.variblePackage.VariableException;
+package oop.ex6.fileProcessor.scopePackage;
+import oop.ex6.fileProcessor.variblePackage.Variable;
+import oop.ex6.fileProcessor.variblePackage.VariableException;
 import java.util.HashMap;
 
 public abstract class Scope {

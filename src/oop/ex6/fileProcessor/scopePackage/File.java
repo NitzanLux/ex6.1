@@ -1,6 +1,4 @@
-package fileProcessor.scopePackage;
-
-import fileProcessor.variblePackage.Variable;
+package oop.ex6.fileProcessor.scopePackage;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,7 +9,7 @@ public class File extends Scope {
     private static final int FILE_IN_SCOPE = 1;
     private HashMap<String, Method> methods = new HashMap<>();
 
-    private LinkedList<Scope> scopes = new LinkedList<Scope>();
+    private LinkedList<Scope> scopes = new LinkedList<>();
 
     public File() {
         super();
@@ -50,12 +48,12 @@ public class File extends Scope {
     }
 
     public void endScope() throws ScopeException {
-        Scope scope = null;
+        Scope scope;
         scope = scopes.getFirst();
         if (scope.closeScope()&&scopes.size()> FILE_IN_SCOPE) {
             scopes.remove(scope);
         } else {
-            throw new ScopeException("");
+            throw new ScopeException.ScoopCloserException();
         }
     }
 

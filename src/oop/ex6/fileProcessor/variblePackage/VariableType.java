@@ -1,4 +1,4 @@
-package fileProcessor.variblePackage;
+package oop.ex6.fileProcessor.variblePackage;
 
 public enum VariableType {
     INTEGER(Constants.INT) {
@@ -68,7 +68,7 @@ public enum VariableType {
         private static final String TRUE = "true";
         private static final String FALSE = "false";
     }
-    public static boolean isType(String typeKey){
+    public static boolean isValueOfType(String typeKey){
         for (VariableType variableType:VariableType.values()) {
             if(variableType.isFitValue(typeKey)){
                 return true;
@@ -77,10 +77,10 @@ public enum VariableType {
         return false;
     }
     static boolean isTypeMatch(String variableAssignedType,Variable variableAsgining){
-        if (variableAsgining.getVariableType()==variableAsgining.getVariableType()){
+        VariableType assognedType=getVariableType(variableAssignedType);
+        if (assognedType==variableAsgining.getVariableType()){
             return true;
         }
-        VariableType assognedType=getVariableType(variableAssignedType);
         if (assognedType==null){
             return false;
         }

@@ -1,9 +1,9 @@
-package fileProcessor.scopePackage;
-import fileProcessor.variblePackage.Variable;
+package oop.ex6.fileProcessor.scopePackage;
+import oop.ex6.fileProcessor.variblePackage.Variable;
 
 import java.util.HashMap;
 
-public class Method extends Scope {
+class Method extends Scope {
 
     private String methodName;
 

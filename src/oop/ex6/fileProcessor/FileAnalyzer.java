@@ -1,11 +1,11 @@
-package fileProcessor;
+package oop.ex6.fileProcessor;
 
-import fileProcessor.scopePackage.ConditionFactory;
-import fileProcessor.scopePackage.File;
-import fileProcessor.scopePackage.MethodFactory;
-import fileProcessor.scopePackage.ScopeException;
-import fileProcessor.variblePackage.VariableException;
-import fileProcessor.variblePackage.VariableFactory;
+import oop.ex6.fileProcessor.scopePackage.ConditionFactory;
+import oop.ex6.fileProcessor.scopePackage.File;
+import oop.ex6.fileProcessor.scopePackage.MethodFactory;
+import oop.ex6.fileProcessor.scopePackage.ScopeException;
+import oop.ex6.fileProcessor.variblePackage.VariableException;
+import oop.ex6.fileProcessor.variblePackage.VariableFactory;
 
 public class FileAnalyzer {
     private File file=new File();
@@ -29,12 +29,20 @@ public class FileAnalyzer {
     }
     public void anlayzeLine(String line) throws VariableException, ScopeException, NoSuchLineException {
         for (LineType lineType: LineType.values ()){
+            if (file.getScopes().size()>1){
+                if (!lineType.scoopAtPosition(true)){
+                    continue;
+                }
+            }else {
+                if (!lineType.scoopAtPosition(false)){
+                    continue;
+                }
+            }
             if (lineType.processSentence(line,this)){
                 return;
             }
         }
         throw new NoSuchLineException();
-
     }
 
 }

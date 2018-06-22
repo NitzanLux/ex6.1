@@ -1,12 +1,11 @@
-package fileProcessor.scopePackage;
+package oop.ex6.fileProcessor.scopePackage;
 
-import fileProcessor.variblePackage.Variable;
-import fileProcessor.variblePackage.VariableType;
+import oop.ex6.fileProcessor.variblePackage.Variable;
+import oop.ex6.fileProcessor.variblePackage.VariableType;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * this we call when we get a condition line.
@@ -87,7 +86,7 @@ public class ConditionFactory {
             file.addScope(conditionScope);
         }
         else {
-            throw new ScopeException("illegal if/while line");//todo  not like thate make an exception
+            throw new ScopeException.IleagleConditionOperatorException();//todo  not like thate make an exception
         }
     }
 

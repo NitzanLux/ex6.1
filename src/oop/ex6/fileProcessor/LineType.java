@@ -1,8 +1,8 @@
-package fileProcessor;
+package oop.ex6.fileProcessor;
 
 
-import fileProcessor.scopePackage.ScopeException;
-import fileProcessor.variblePackage.VariableException;
+import oop.ex6.fileProcessor.scopePackage.ScopeException;
+import oop.ex6.fileProcessor.variblePackage.VariableException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,14 +105,23 @@ public enum LineType {
             this.inInnerScope =isInner;
             this.inOuterScope =isOutter;
         }
-        private boolean isOuter(){
+        boolean isOuter(){
             return inOuterScope;
         }
-        private boolean isInner(){
+        boolean isInner(){
             return inInnerScope;
         }
 
     }
+
+    public boolean scoopAtPosition(boolean isInner) {
+        if (isInner){
+            return scopePosition.isInner();
+        }else {
+            return scopePosition.isOuter();
+        }
+    }
+
     public abstract boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws VariableException,
             ScopeException;
     boolean isMatch(String line){
@@ -134,9 +143,8 @@ public enum LineType {
         private static final String RETURN_REGEX_STR = "^[ \\t]*return\\;[ \\t]*$";
         private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:(?:\\\".*\\\")" +
                 "|\\w+)(?:[ \\t]*(?:\\,[ \\t]*(?:(?:\\\".*\\\")|\\w+)[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
-        private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
-                //"^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]*" +
-                //"(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
+        private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]" +
+                "*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
 
         private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal" +
                 "\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
