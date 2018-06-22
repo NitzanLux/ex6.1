@@ -14,7 +14,7 @@ public class VariableFactory {
     private static final String COMMA = ",", EQUAL = "=", SEMICOL = ";", FINAL = "final";
     private static final char SPACE = ' ';
 
-    private Scope currentScope = file.getCurrentScope();
+//    private Scope currentScope = file.getCurrentScope ();
 
     public VariableFactory(File file){
         this.file=file;

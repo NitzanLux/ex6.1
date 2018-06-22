@@ -30,22 +30,22 @@ public enum LineType {
             return false;
         }
     },
-    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
-        @Override
-        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
-            if (this.isMatch(line)){
-                fileAnalyzer.getConditionFactory().assignScope(line);
-                return true;
-            }
-            return false;
-        }
-    },
-    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
-        @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException {
-            return IF.processSentence(line,fileAnalyzer);
-        }
-    },
+//    IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE){
+//        @Override
+//        public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
+//            if (this.isMatch(line)){
+//                fileAnalyzer.getConditionFactory().assignScope(line);
+//                return true;
+//            }
+//            return false;
+//        }
+//    },
+//    WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE){
+//        @Override
+//        public boolean processSentence(String line,FileAnalyzer fileAnalyzer) throws ScopeException, VariableException {
+//                return IF.processSentence(line,fileAnalyzer);
+//        }
+//    },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE){
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer) throws ScopeException {
@@ -145,7 +145,7 @@ public enum LineType {
         private static final String REASSIGNMENT_REGEX_STR = "^[ \\t]*\\w+[ \\t]*\\=[ \\t]*" +
                 "(?:(?!\\=|\\,)[\\S])+[ \\t]*(?:\\,[ \\t]*\\w+[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
                 "[\\S])+)*[ \\t]*\\;[ \\t]*$";
-        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[ \\t]*$";
+        private static final String BLANK_LINE_REGEX_STR = "^(?:\\\\{2}.*)?[\\r]*$";
         private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
 //    //todo  is this the proper way?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????

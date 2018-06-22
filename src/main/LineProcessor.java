@@ -19,10 +19,12 @@ public class LineProcessor {
         for (String line:sjavaData) {
             try {
                 fileAnalyzer.anlayzeLine(line);
+                System.out.println(0);
             } catch (VariableException e) {
-                e.printStackTrace();//todo somthing (proper msg)
+                System.out.println();
+//                e.printStackTrace();//todo somthing (proper msg)
             } catch (ScopeException e) {
-                e.printStackTrace();//todo somthing  (proper msg)
+//                e.printStackTrace();//todo somthing  (proper msg)
             }
         }
     }
