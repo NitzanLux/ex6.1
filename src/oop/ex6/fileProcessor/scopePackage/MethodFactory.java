@@ -103,7 +103,7 @@ public class MethodFactory {
      */
     private HashMap<String, Variable> getVariables(String line) throws VariableException {
         String[] varLines = sliceLine(line);
-        if(varLines.length==2){
+        if(varLines.length>=2){
             String varLine=varLines[1];
             String[] splitVars = varLine.split(",");
             LinkedList<String> strings = new LinkedList<>();

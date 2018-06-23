@@ -3,6 +3,7 @@ package oop.ex6.main;
 import java.io.*;
 import java.util.ArrayList;
 
+import static java.nio.file.Files.newBufferedReader;
 import static java.nio.file.Files.readAllLines;
 
 /**
@@ -34,7 +35,9 @@ class Reader {
                     sjavaData.add(counter, line);
                     counter++;
                 }
-            }
+        } catch (IOException e) {
+            throw e;
+        }
         return sjavaData;
     }
 }
