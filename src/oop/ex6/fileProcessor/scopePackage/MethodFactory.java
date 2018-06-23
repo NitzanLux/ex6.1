@@ -102,19 +102,23 @@ public class MethodFactory {
      * @throws VariableException
      */
     private HashMap<String, Variable> getVariables(String line) throws VariableException {
-        String varLine = sliceLine(line)[1];
-        String[] splitVars = varLine.split(",");
-        LinkedList<String> strings = new LinkedList<>();
-        strings.addAll(Arrays.asList(splitVars));
-        HashMap<String, Variable> variables = new HashMap<>(strings.size());
-        {
-            VariableFactory variableFactory = new VariableFactory(file);//todo is it good delegation??????????????????????????????????????????????
-            Variable[] variablesArray = variableFactory.getVariables(strings, true);
-            for (Variable variable : variablesArray) {
-                variables.put(variable.getName(), variable);
+        String[] varLines = sliceLine(line);
+        if(varLines.length==2){
+            String varLine=varLines[1];
+            String[] splitVars = varLine.split(",");
+            LinkedList<String> strings = new LinkedList<>();
+            strings.addAll(Arrays.asList(splitVars));
+            HashMap<String, Variable> variables = new HashMap<>(strings.size());
+            {
+                VariableFactory variableFactory = new VariableFactory(file);//todo is it good delegation??????????????????????????????????????????????
+                Variable[] variablesArray = variableFactory.getVariables(strings, true);
+                for (Variable variable : variablesArray) {
+                    variables.put(variable.getName(), variable);
+                }
             }
+            return variables;
         }
-        return variables;
+        return new HashMap<String, Variable>();
     }
 
     public void methodReturn() {
