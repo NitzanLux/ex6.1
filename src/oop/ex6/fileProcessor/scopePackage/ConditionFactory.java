@@ -58,7 +58,7 @@ public class ConditionFactory {
                         }
                     }
                 }
-                return false;
+//                return false; no need for false here nitzan
             }
         }
         return true;
