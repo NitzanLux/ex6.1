@@ -8,12 +8,10 @@ import java.util.LinkedList;
 
 public class File extends Scope {
 
-
-    private static final int FILE_IN_SCOPE = 1;
+    public static final int MIN_SCOPE_SIZE=1;
     private HashMap<String, Method> methods = new HashMap<>();
 
     private LinkedList<Scope> scopes = new LinkedList<>();
-
     public File() {
         super();
         addScope(this);
@@ -53,7 +51,7 @@ public class File extends Scope {
     public void endScope() throws ScopeException {
         Scope scope;
         scope = scopes.getFirst();
-        if (scope.closeScope()&&scopes.size()> FILE_IN_SCOPE) {
+        if (scope.closeScope()&&scopes.size()> MIN_SCOPE_SIZE) {
             scopes.remove(scope);
         } else {
             throw new ScopeException.ScoopCloserException();
@@ -75,7 +73,7 @@ public class File extends Scope {
         }
         return scopeVariabls;
     }
-    public Variable getVariable(String name){
+    Variable getVariable(String name){
         for (Scope scope:scopes) {
            if (scope.getVariables().containsKey(name)){
             return scope.getVariables().get(name);

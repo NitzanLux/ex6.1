@@ -13,9 +13,7 @@ public enum VariableType {
     },
     DOUBLE(Constants.DOUBLE1) {
         boolean isFitValue(String value) {
-            try {
-                Double.parseDouble(value);
-            } catch (NumberFormatException e) {
+            if (!value.matches("\\-?[0-9]+(?:\\.[0-9]+)?")){
                 return false;
             }
             return true;
@@ -72,8 +70,9 @@ public enum VariableType {
       return getVariableType(typeKey)!=null;
     }
 
-    public static boolean isTypeMatchForAssignment(String variableAssignedType, VariableType variableAsginingType){
-        VariableType assognedType=getVariableType(variableAssignedType);
+    public static boolean isTypeMatchForAssignment(String variableAssignedType, VariableType variableAsginingType)
+            throws VariableException.TypeNotFoundException {
+        VariableType assognedType=parseType(variableAssignedType);
         return isTypeIsParsable(assognedType,variableAsginingType);
     }
    public static VariableType getVariableType(String typeKey){

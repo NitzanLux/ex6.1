@@ -9,6 +9,7 @@ import java.util.LinkedList;
 
 public class VariableFactory {
 
+    private static final int FIRST_POSITION = 0;
     private File file;
 
     private static final String COMMA = ",", EQUAL = "=", SEMICOLON = ";", FINAL = "final";
@@ -39,7 +40,7 @@ public class VariableFactory {
         String[] variables = line.split("\\,|\\(|\\)|\\;");
         LinkedList<String> strings = new LinkedList<>();
         for (String variable : variables) {
-            strings.addFirst(variable);
+            strings.addLast(variable);
         }
         return strings;
     }
@@ -54,9 +55,11 @@ public class VariableFactory {
     public Variable[] getVariables(LinkedList<String> strings, boolean isAlreadyAssigned) throws VariableException {
         Variable[] variables = new Variable[strings.size()];
         int counter = 0;
-        HashSet<String> currentNames=new HashSet<>();
+        String variableType = null;
+        HashSet<String> currentNames = new HashSet<>();
         for (String variable : strings) {
             int firstIndex = 0;
+            String variableName;
             boolean isAssigned = false;
             if (variable.contains("=")) {
                 isAssigned = true;
@@ -64,8 +67,8 @@ public class VariableFactory {
             variable = variable.trim();
             String[] variableData = variable.split("\\s+(?:\\=\\s*)?");
             String value = null;
-            if (variableData.length < 2) {//todo megic number;
-                throw new VariableException.IllegalVariableNameException();//todo illigle assigment 04444444444444444444444444444444444444
+            if (variableData.length < File.MIN_SCOPE_SIZE + 1) {
+                throw new VariableException.IllegalVariableNameException();
             }
             if (isAssigned) {
                 value = variableData[variableData.length - 1];
@@ -75,25 +78,36 @@ public class VariableFactory {
                 isItFinal = true;
                 firstIndex++;
             }
-            if (!currentNames.contains(variableData[1+firstIndex])){
-                currentNames.add(variableData[1+firstIndex]);
-            }else {
+            if (!currentNames.contains(variableData[1 + firstIndex])) {
+                currentNames.add(variableData[1 + firstIndex]);
+            } else {
                 throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
             }
-            if (isAssigned && !VariableType.isValueOfType(value)) {
-                if (variableToVaribleAssignmentLeagel(variableData[firstIndex], value)) {
+            if (!((variableData.length==2&&isAssigned)||(variableData.length==1&&!isAssigned))) {//if thers molty assigment with the same type( boolean a,a,a
+                variableType=variableData[firstIndex];
+                variableName=   variableData[1 + firstIndex];
+            }else if (variableType==null){
+                throw new VariableException.FinalException.AssertionTypeIncompatibleException();//if variable type does not exists.
+            }else {
+                variableName=variableData[FIRST_POSITION];
+            }
+            if (isAssigned && !VariableType.isValueOfType(value)) {//if variable is assigned by reference.
+                if (variableToVaribleAssignmentLeagel(variableType, value)) {//chack if type are fit.
                     Variable variableRefernce = getVariable(value);
-                    variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
+                    if (!variableRefernce.isValueAssigned()) {
+                        throw new VariableException.FinalException.AssertionTypeIncompatibleException();
+                    }
+                    variables[counter] = new Variable(variableType, variableName,
                             variableRefernce.isValueAssigned(), isItFinal);
                 } else {
                     throw new VariableException.FinalException.AssertionTypeIncompatibleException();
                 }
 
             } else if (!isAlreadyAssigned) {
-                variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
+                variables[counter] = new Variable(variableType, variableName,//create variable from reference.
                         value, isItFinal);
             } else {
-                variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
+                variables[counter] = new Variable(variableType, variableName,
                         true, isItFinal);
             }
             counter++;
@@ -149,7 +163,8 @@ public class VariableFactory {
         return null;
     }
 
-    private boolean variableToVaribleAssignmentLeagel(String variableAssignedType, String variableAssigningKey) {
+    private boolean variableToVaribleAssignmentLeagel(String variableAssignedType, String variableAssigningKey)
+            throws VariableException.TypeNotFoundException {
         Variable variableAssigning = getVariable(variableAssigningKey);
         return variableAssigning != null && VariableType.isTypeMatchForAssignment(variableAssignedType,
                 variableAssigning.getVariableType());

@@ -33,8 +33,16 @@ class Method extends Scope {
     boolean variblesFitToMethodType(int position,VariableType variableType){
         return variableTypesInOrder.get(position)==variableType;
     }
-    public static class MethodCalld {
+
+    int getVariableAmmoune(){
+        return variableTypesInOrder.size();
+    }
+
+
+
+    static class MethodCalld {
         String methodLine;
+
         HashMap<String,Variable> currentVariabls;
 
         MethodCalld(String methodLine, HashMap<String, Variable> currentVariabls) {
@@ -42,15 +50,19 @@ class Method extends Scope {
             this.currentVariabls = currentVariabls;
         }
 
-        public HashMap<String, Variable> getCurrentVariabls() {
+        HashMap<String, Variable> getCurrentVariabls() {
             return currentVariabls;
         }
 
-        public String getMethodLine() {
+        String getMethodLine() {
             return methodLine;
         }
-    }
-    int getVariableAmmoune(){
-        return variableTypesInOrder.size();
+        void updateGlobalVariabls(HashMap<String, Variable> globalVariabls){
+            for (Variable variable:globalVariabls.values()) {
+                if (!currentVariabls.containsValue(variable)){
+                    currentVariabls.put(variable.getName(),variable);
+                }
+            }
+        }
     }
 }

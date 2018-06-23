@@ -44,7 +44,7 @@ public class Variable {
 
     private void setVariable(String type, String variableName, boolean isFinal) throws VariableException {
         this.isFinal = isFinal;
-        this.variableType = VariableType.parseType(type);
+            this.variableType = VariableType.parseType(type);
         setVariableName(variableName);
 
 

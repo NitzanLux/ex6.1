@@ -2,6 +2,7 @@ package oop.ex6.main;
 
 import oop.ex6.fileProcessor.FileAnalyzer;
 import oop.ex6.fileProcessor.NoSuchLineException;
+import oop.ex6.fileProcessor.scopePackage.File;
 import oop.ex6.fileProcessor.scopePackage.ScopeException;
 import oop.ex6.fileProcessor.variblePackage.VariableException;
 
@@ -26,13 +27,24 @@ public class Sjavac {
         }
 
         FileAnalyzer fileAnalyzer = new FileAnalyzer();
-        for (String line : sjavaData) {
-            try {
-                fileAnalyzer.anlayzeLine(line);
-            } catch (VariableException | ScopeException | NoSuchLineException e) {
-                System.out.print(ILLEGAL_CODE);
-                System.err.println(e.getMessage());
-                return;
+        boolean isFirstTime=true;
+        for (int i = 0; i <2 ; i++) {
+            for (String line : sjavaData) {
+                try {
+                    fileAnalyzer.anlayzeLine(line,isFirstTime);
+                } catch (VariableException | ScopeException | NoSuchLineException e) {
+                    System.out.print(ILLEGAL_CODE);
+                    System.err.println(e.getMessage());
+                    return;
+                }
+            }
+            isFirstTime=false;
+            if (!isFirstTime){
+                if (fileAnalyzer.getFile().getScopes().size()> File.MIN_SCOPE_SIZE){
+                    System.out.print(ILLEGAL_CODE);
+                    System.err.println("problem with closing scoops");
+                    return;
+                }
             }
         }
         try {

@@ -47,12 +47,8 @@ public class MethodFactory {
      */
 
     public void methodCallsChecker(Method.MethodCalld methodCalld) throws ScopeException {
-        String line;
-        HashMap<String,Variable> currentVariables;
-        {
-            line=methodCalld.getMethodLine();
-            currentVariables=methodCalld.getCurrentVariabls();
-        }
+        String line=methodCalld.getMethodLine();
+        HashMap<String,Variable> currentVariables=methodCalld.getCurrentVariabls();
         String[] sline = sliceLine(line);
         int counter=0;
         Method currentMethod =  file.getMethods().get(sline[0]);
@@ -79,6 +75,10 @@ public class MethodFactory {
                         throw new ScopeException.MethodNotDeclerdException(var);
                     }
 
+                }
+            }else {
+                if (currentMethod.getVariableAmmoune()!=0){
+                    throw new ScopeException.MethodVariablesUnfitException();
                 }
             }
         } else {
@@ -162,6 +162,7 @@ public class MethodFactory {
     }
     public void cheakMethodCalls() throws ScopeException {
         for (Method.MethodCalld methodCalld:methodsCalls) {
+            methodCalld.updateGlobalVariabls(file.getVariables());
             methodCallsChecker(methodCalld);
         }
     }
