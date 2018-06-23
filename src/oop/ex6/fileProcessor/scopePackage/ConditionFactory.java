@@ -1,6 +1,7 @@
 package oop.ex6.fileProcessor.scopePackage;
 
 import oop.ex6.fileProcessor.variblePackage.Variable;
+import oop.ex6.fileProcessor.variblePackage.VariableException;
 import oop.ex6.fileProcessor.variblePackage.VariableType;
 
 import java.util.HashMap;
@@ -42,35 +43,24 @@ public class ConditionFactory {
      * @return
      */
     private boolean areVariablesLegit(List<String> variables){
-        LinkedList<Scope> scopes = this.file.getScopes();
-        HashMap<String, Variable> fatherVars;
         for(String variable: variables){
-            if(variable.equals("true")||variable.equals("false")) { continue; }
-            try{
-                Double.parseDouble(variable);
-            }
-            catch (NumberFormatException e) {
-                for (Scope scope: scopes) {
-                    fatherVars = scope.getVariables();
-                    if (fatherVars.containsKey(variable)) {
-                        if (!isValueBoolean(fatherVars.get(variable))) {
-                            return false;
-                        }
+            VariableType variableType= VariableType.getVariableType(variable);
+            if (variableType==null){
+                if (!file.isVariableAssigned(variable)){
+                    return false;
+                }else {
+                    Variable currentVariable = file.getVariable(variable);
+                    if (!currentVariable.isValueAssigned()){
+                        return false;
                     }
+                    variableType=currentVariable.getVariableType();
+                }
+                if (!VariableType.isTypeIsParsable(VariableType.BOOLEAN,variableType)){
+                    return false;
                 }
             }
         }
         return true;
-    }
-
-    private boolean isValueBoolean(Variable variable){
-        VariableType[] legalTypes = {VariableType.INTEGER, VariableType.BOOLEAN, VariableType.BOOLEAN};
-        for(VariableType type: legalTypes){
-            if(variable.getVariableType().equals(type)){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

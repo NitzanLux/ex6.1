@@ -1,5 +1,8 @@
 package oop.ex6.fileProcessor.scopePackage;
 
+import oop.ex6.fileProcessor.variblePackage.Variable;
+import sun.awt.SunHints;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -21,7 +24,7 @@ public class File extends Scope {
         return true;
     }
 
-    HashMap getMethods() {
+    HashMap<String,Method> getMethods() {
         return methods;
     }
 
@@ -59,5 +62,25 @@ public class File extends Scope {
 
     public LinkedList<Scope> getScopes() {
         return scopes;
+    }
+    HashMap<String,Variable> getScopeVariables(){
+        HashMap<String,Variable> scopeVariabls=new HashMap<>();
+        for (Scope scope:scopes) {
+            for (Variable variable:scope.getVariables().values()) {
+                if (!scopeVariabls.containsValue(variable)){
+                    scopeVariabls.put(variable.getName(),variable);
+                }
+
+            }
+        }
+        return scopeVariabls;
+    }
+    public Variable getVariable(String name){
+        for (Scope scope:scopes) {
+           if (scope.getVariables().containsKey(name)){
+            return scope.getVariables().get(name);
+           }
+        }
+        return null;
     }
 }

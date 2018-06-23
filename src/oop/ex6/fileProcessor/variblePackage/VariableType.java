@@ -34,7 +34,7 @@ public enum VariableType {
     BOOLEAN(Constants.BOOLEAN1) {
         boolean isFitValue(String value) {
             return value.equals(Constants.TRUE) || value.equals(Constants.FALSE)||
-                    VariableType.INTEGER.isFitValue(value);
+                    VariableType.DOUBLE.isFitValue(value);
         }
     };
 
@@ -68,36 +68,34 @@ public enum VariableType {
         private static final String TRUE = "true";
         private static final String FALSE = "false";
     }
-    public static boolean isValueOfType(String typeKey){
-        for (VariableType variableType:VariableType.values()) {
-            if(variableType.isFitValue(typeKey)){
-                return true;
-            }
-        }
-        return false;
+    public static boolean  isValueOfType(String typeKey){
+      return getVariableType(typeKey)!=null;
     }
-    static boolean isTypeMatch(String variableAssignedType,Variable variableAsgining){
+
+    public static boolean isTypeMatchForAssignment(String variableAssignedType, VariableType variableAsginingType){
         VariableType assognedType=getVariableType(variableAssignedType);
-        if (assognedType==variableAsgining.getVariableType()){
+        return isTypeIsParsable(assognedType,variableAsginingType);
+    }
+   public static VariableType getVariableType(String typeKey){
+       for (VariableType variableType:VariableType.values()) {
+           if (variableType.isFitValue(typeKey)){
+               return variableType;
+           }
+       }
+       return null;
+    }
+    public static boolean isTypeIsParsable(VariableType parser,VariableType toParse){
+        if (parser==toParse){
             return true;
         }
-        if (assognedType==null){
+        if (parser==null){
             return false;
         }
-        if (assognedType==VariableType.DOUBLE){
-            return variableAsgining.getVariableType() == VariableType.INTEGER;
-        }else if (assognedType==VariableType.BOOLEAN){
-            return variableAsgining.getVariableType() == VariableType.INTEGER||variableAsgining.getVariableType()
-                    == VariableType.DOUBLE;
+        if (parser==VariableType.DOUBLE){
+            return toParse == VariableType.INTEGER;
+        }else if (parser==VariableType.BOOLEAN){
+            return toParse == VariableType.INTEGER || toParse == VariableType.DOUBLE;
         }
         return false;
-    }
-    private static VariableType getVariableType(String typeKey){
-        for (VariableType currentType:VariableType.values()){
-            if (currentType.typeKey.equals(typeKey)){
-                return currentType;
-            }
-        }
-        return null;
     }
 }

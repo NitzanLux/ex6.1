@@ -9,7 +9,7 @@ public abstract class ScopeException extends Exception {
     }
 
     static class AlreadyAssignedException extends ScopeException{
-        private static final String ALREADY_ASSIGNED_MSG = "variable %sis already assigned";
+        private static final String ALREADY_ASSIGNED_MSG = "variable %s is already assigned";
 
         AlreadyAssignedException(String name) {
             super(String.format(ALREADY_ASSIGNED_MSG, name));
@@ -36,6 +36,13 @@ public abstract class ScopeException extends Exception {
             super(String.format(METHOD_NOT_DECLERD_MSG,variable));
         }
     }
+    static class MethodVariablesUnfitException extends ScopeException{
+        private static final String METHOD_VARIABLE_UNFIT_MSG ="Method call variables are illegal";
+
+        MethodVariablesUnfitException() {
+            super(METHOD_VARIABLE_UNFIT_MSG);
+        }
+    }
     static class IleagleConditionOperatorException extends ScopeException{
         private static final String CONDITION_IS_UNVALID_MSG ="illegal condition operator";
 
@@ -43,11 +50,12 @@ public abstract class ScopeException extends Exception {
             super(CONDITION_IS_UNVALID_MSG);
         }
     }
-    static class MaxScopesInFileException extends ScopeException{
-        private static final String MAX_SCOPE_DEPT_MSG ="you have reached max scop dept";
+    static class MethodParameterProblemException extends ScopeException{
+        private static final String METHOD_PARAMETER_UNFIT_MSG ="method parameters are unfit";
 
-        MaxScopesInFileException() {
-            super(MAX_SCOPE_DEPT_MSG);
+        MethodParameterProblemException() {
+            super(METHOD_PARAMETER_UNFIT_MSG);
         }
     }
+
 }

@@ -12,7 +12,7 @@ public class FileAnalyzer {
     private MethodFactory methodFactory=new MethodFactory(file);
     private ConditionFactory conditionFactory=new ConditionFactory(file);
     private VariableFactory variableFactory=new VariableFactory(file);
-
+    private int line=0;
     File getFile() {
         return file;
     }
@@ -24,10 +24,16 @@ public class FileAnalyzer {
         return methodFactory;
     }
 
+    int getLine() {
+        return line;
+    }
+
     VariableFactory getVariableFactory() {
         return variableFactory;
     }
+
     public void anlayzeLine(String line) throws VariableException, ScopeException, NoSuchLineException {
+        this.line++;
         for (LineType lineType: LineType.values ()){
             if (file.getScopes().size()>1){
                 if (!lineType.scoopAtPosition(true)){

@@ -4,6 +4,7 @@ import oop.ex6.fileProcessor.scopePackage.File;
 import oop.ex6.fileProcessor.scopePackage.Scope;
 import oop.ex6.fileProcessor.scopePackage.ScopeException;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class VariableFactory {
@@ -53,6 +54,7 @@ public class VariableFactory {
     public Variable[] getVariables(LinkedList<String> strings, boolean isAlreadyAssigned) throws VariableException {
         Variable[] variables = new Variable[strings.size()];
         int counter = 0;
+        HashSet<String> currentNames=new HashSet<>();
         for (String variable : strings) {
             int firstIndex = 0;
             boolean isAssigned = false;
@@ -72,6 +74,11 @@ public class VariableFactory {
             if (variableData[0].equals("final")) {
                 isItFinal = true;
                 firstIndex++;
+            }
+            if (!currentNames.contains(variableData[1+firstIndex])){
+                currentNames.add(variableData[1+firstIndex]);
+            }else {
+                throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
             }
             if (isAssigned && !VariableType.isValueOfType(value)) {
                 if (variableToVaribleAssignmentLeagel(variableData[firstIndex], value)) {
@@ -144,7 +151,8 @@ public class VariableFactory {
 
     private boolean variableToVaribleAssignmentLeagel(String variableAssignedType, String variableAssigningKey) {
         Variable variableAssigning = getVariable(variableAssigningKey);
-        return variableAssigning != null && VariableType.isTypeMatch(variableAssignedType, variableAssigning);
+        return variableAssigning != null && VariableType.isTypeMatchForAssignment(variableAssignedType,
+                variableAssigning.getVariableType());
     }
 
 }

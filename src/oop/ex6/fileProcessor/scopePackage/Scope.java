@@ -17,7 +17,6 @@ public abstract class Scope {
     private boolean isVariableAssigned(Variable variable){
         return (this.variables.containsKey(variable.getName()));
     }
-
     public void addVariable(Variable variable) throws ScopeException {
         if (isVariableAssigned(variable)){
             throw new ScopeException.AlreadyAssignedException(variable.getName());

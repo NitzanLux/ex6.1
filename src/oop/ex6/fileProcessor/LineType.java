@@ -143,8 +143,8 @@ public enum LineType {
         private static final String RETURN_REGEX_STR = "^[ \\t]*return\\;[ \\t]*$";
         private static final String METHOD_CALL_REGEX_STR = "^[ \\t]*[\\w]+[ \\t]*\\([ \\t]*(?:(?:\\\".*\\\")" +
                 "|\\w+)(?:[ \\t]*(?:\\,[ \\t]*(?:(?:\\\".*\\\")|\\w+)[ \\t]*)*)?\\)[ \\t]*\\;[ \\t]*$";
-        private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:\\w+(?:\\.?\\w+)?)(?:[ \\t]" +
-                "*(?:\\&{2}|\\|{2})[ \\t]*(?:\\w+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
+        private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:[-\\w]+(?:\\.?\\w+)?)(?:[ \\t]" +
+                "*(?:\\&{2}|\\|{2})[ \\t]*(?:[-\\w]+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
 
         private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal" +
                 "\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?!\\=|\\,)" +
@@ -160,6 +160,7 @@ public enum LineType {
         private static final String BLANK_LINE_REGEX_STR = "^(?:\\/{2}.*)?[\\s]*$";
         private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
+
 
 }
 

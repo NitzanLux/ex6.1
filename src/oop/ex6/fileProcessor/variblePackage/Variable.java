@@ -38,7 +38,7 @@ public class Variable {
 
     }
 
-    boolean isValueAssigned() {
+    public boolean isValueAssigned() {
         return isValueAssigned;
     }
 

@@ -5,17 +5,14 @@ import oop.ex6.fileProcessor.variblePackage.VariableException;
 import oop.ex6.fileProcessor.variblePackage.VariableFactory;
 import oop.ex6.fileProcessor.variblePackage.VariableType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class MethodFactory {
 
     private static final int METHOD_PLACE_IN_SCOPE = 1;
     private File file;
     private Method currentMethod;
-    private ArrayList<String> methodsCalls = new ArrayList<>();
+    private ArrayList<Method.MethodCalld> methodsCalls = new ArrayList<>();
 
     /**
      * constructor
@@ -34,8 +31,9 @@ public class MethodFactory {
      */
     public void createMethod(String line) throws VariableException {
         String methodName = getName(line);
-        HashMap<String, Variable> variables = getVariables(line);
-        Method method = new Method(variables, methodName);
+        ArrayList<Variable> variables =getArrayVariabls(line);
+        ArrayList<VariableType> variableTypes=variableToTypesInOrder(variables);
+        Method method = new Method(variablesToHashmap(variables), methodName,variableTypes);
         this.currentMethod = method;
         this.file.addScope(this.currentMethod);
         this.file.addMethod(method);
@@ -47,20 +45,37 @@ public class MethodFactory {
      * @param line
      * @throws ScopeException
      */
-    private void methodCall(String line) throws ScopeException {
+
+    public void methodCallsChecker(Method.MethodCalld methodCalld) throws ScopeException {
+        String line;
+        HashMap<String,Variable> currentVariables;
+        {
+            line=methodCalld.getMethodLine();
+            currentVariables=methodCalld.getCurrentVariabls();
+        }
         String[] sline = sliceLine(line);
-        if (file.getMethods().containsKey(sline[0])) {
+        int counter=0;
+        Method currentMethod =  file.getMethods().get(sline[0]);
+        if (currentMethod!=null) {
             if (sline.length > 1) {
                 String[] vars = sline[1].split(",");
-                for (int i = 0; i < vars.length; i++) {
-                    vars[i] = vars[i].replaceAll("\\s+", "");
+                if (vars.length!=currentMethod.getVariableAmmoune()){
+                    throw new ScopeException.MethodVariablesUnfitException();
                 }
                 for (String var : vars) {
                     var = var.trim();
-                    if (VariableType.isValueOfType(var)) {
-                        continue;
+                    VariableType variableType=VariableType.getVariableType(var);
+                    if (variableType!=null) {
+                        if (currentMethod.variblesFitToMethodType(counter,variableType)) {
+                            counter++;
+                            continue;
+                        }
+                        else {
+                            throw new ScopeException.MethodVariablesUnfitException();
+                        }
                     }
-                    if (!file.isVariableAssigned(var)) {
+                    Variable currentVar=currentVariables.get(var);
+                    if (currentVar==null||!currentVar.isValueAssigned()) {
                         throw new ScopeException.MethodNotDeclerdException(var);
                     }
 
@@ -93,7 +108,16 @@ public class MethodFactory {
      * @return
      */
     private String getName(String line) {
-        return sliceLine(line)[0];
+        String methodName=sliceLine(line)[0];
+        methodName=methodName.replace("void","").trim();
+        return methodName;
+    }
+    private ArrayList<VariableType> variableToTypesInOrder(ArrayList<Variable> variabls){
+        ArrayList<VariableType> variableTypes = new ArrayList<>();
+        for (Variable variable:variabls) {
+            variableTypes.add(variable.getVariableType());
+        }
+        return variableTypes;
     }
 
     /*
@@ -103,43 +127,43 @@ public class MethodFactory {
      * @return
      * @throws VariableException
      */
-    private HashMap<String, Variable> getVariables(String line) throws VariableException {
+    private HashMap<String, Variable> variablesToHashmap(ArrayList<Variable> variabls) throws VariableException {
+        HashMap<String,Variable> variableHashMap=new HashMap<>(variabls.size());
+        for (Variable variable:variabls) {
+            variableHashMap.put(variable.getName(),variable);
+        }
+        return variableHashMap;
+    }
+    private ArrayList<Variable> getArrayVariabls (String line) throws VariableException {
         line = line.trim();
         String[] varLines = sliceLine(line);
         if (varLines.length >= 2) {
             String varLine = varLines[1];
             String[] splitVars = varLine.split(",");
             LinkedList<String> strings = new LinkedList<>();
+            ArrayList< Variable> variables = new ArrayList<>(strings.size());
             strings.addAll(Arrays.asList(splitVars));
-            HashMap<String, Variable> variables = new HashMap<>(strings.size());
             {
                 VariableFactory variableFactory = new VariableFactory(file);//todo is it good delegation??????????????????????????????????????????????
-                Variable[] variablesArray = new Variable[0];
-                variablesArray = variableFactory.getVariables(strings, true);
-                for (Variable variable : variablesArray) {
-                    variables.put(variable.getName(), variable);
-                }
+                Variable[] variablesArray = variableFactory.getVariables(strings, true);
+                variables.addAll(Arrays.asList(variablesArray));
             }
             return variables;
         }
-        return new HashMap<String, Variable>();
+        return new ArrayList<>();
     }
-
     public void methodReturn() {
         if (file.getScopes().size() == METHOD_PLACE_IN_SCOPE + 1 && currentMethod != null) {
             currentMethod.setReturn();
         }
     }
-
-    public void cheakMethodCalls() throws ScopeException {
-        for (String line : methodsCalls) {
-            methodCall(line);
-        }
-
+    public void addMethodCall(String line){
+        methodsCalls.add(new Method.MethodCalld(line,file.getScopeVariables()));
     }
-
-    public void addMethodCall(String line) {
-        methodsCalls.add(line);
+    public void cheakMethodCalls() throws ScopeException {
+        for (Method.MethodCalld methodCalld:methodsCalls) {
+            methodCallsChecker(methodCalld);
+        }
     }
 
 

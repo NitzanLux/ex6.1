@@ -1,3 +1,4 @@
+
 import oop.ex6.main.Sjavac;
 
 // import the library - alt+enter
@@ -18,10 +19,10 @@ import java.util.stream.Collectors;
 
 public class Tester_ex6_oop {
 	private static Path pathToFiles = Paths.get("src", "tester_files");
-	private static Path pathToTests = Paths.get(pathToFiles.toString(), "tests");
+	private static Path pathToTests = Paths.get(pathToFiles.toString(), "Tests");
 	private static Path pathToUserTests = Paths.get(pathToTests.toString(), "specificTests");
 	private static Path pathToOutputFile = Paths.get(pathToFiles.toString(), "user_output.txt");
-	private static Path pathToSchoolSolution = Paths.get(pathToFiles.toString(), "tester_files/school_solution.jar");
+	private static Path pathToSchoolSolution = Paths.get(pathToFiles.toString(), "school_solution.jar");
 //	private static Path pathToMainClass = Paths.get("oop", "ex5", "main", "Sjava.java");
 //	private static Path pathToCompiledFiles = Paths.get(pathToFiles.toString(), "compiled_files");
 
@@ -50,7 +51,7 @@ public class Tester_ex6_oop {
 	/*
 	optionals - run specific tests.
 	To use this:
-		1. place Sjava files in 'tester_files.Tests/specificTests' folder.
+		1. place Sjava files in 'Tests/specificTests' folder.
 		2. press the little green arrow here to the left.
 		<---
 	 */
@@ -59,7 +60,7 @@ public class Tester_ex6_oop {
 		LinkedList<File> listOfTests = getListOfTests(pathToUserTests);
 		if (listOfTests.size() == 0) { // not files were places.
 			System.out.println("If you want to use runSpecificTests_optional, you have to add test files to" +
-					"'tester_files.Tests\\specificTests'.");
+					"'Tests\\specificTests'.");
 		}
 		for (File file : listOfTests) {
 			Path testPath = Paths.get(file.getPath());

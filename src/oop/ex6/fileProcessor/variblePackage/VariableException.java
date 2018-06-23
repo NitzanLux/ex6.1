@@ -88,7 +88,7 @@ public class VariableException extends Exception{
 
 
             private static final String VAL_FINAL_VALUE_ASSIGMENT_MSG =
-                    "the final variable you tried to assigned (%s) has no value";
+                    "the final variable you tried to assigned (%s) has no value.";
 
             /*
              * Constructs a new exception with the specified detail message.  The
@@ -104,11 +104,22 @@ public class VariableException extends Exception{
 
 
             private static final String TYPE_ASSERTION_ERROR_MSG =
-                    "the variable for reference is not compatible with the assigning variable type";
+                    "the variable for reference is not compatible with the assigning variable type.";
 
 
             AssertionTypeIncompatibleException() {
                 super(TYPE_ASSERTION_ERROR_MSG);
+            }
+        }
+        static class AssigmentOfTheSameVariableException extends VariableException.FinalException {
+
+
+            private static final String TWICE_ASSIGMENT_MSG =
+                    "a variable is assigned twice in a line.";
+
+
+            AssigmentOfTheSameVariableException() {
+                super(TWICE_ASSIGMENT_MSG);
             }
         }
     }
