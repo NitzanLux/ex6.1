@@ -78,7 +78,7 @@ public class VariableFactory {
                 isItFinal = true;
                 firstIndex++;
             }
-            if (!currentNames.contains(variableData[1 + firstIndex])) {
+            if (!currentNames.contains(variableData[1 + firstIndex])) {//in case of double assigment name in the same line.
                 currentNames.add(variableData[1 + firstIndex]);
             } else {
                 throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
@@ -129,6 +129,8 @@ public class VariableFactory {
             if (!isLegalReAssignment(variable)) {
                 throw new VariableException.NoVariableNameException();
             }
+            file.getVariable(variable.getName()).setValueAssigned();
+
         }
     }
 
@@ -169,5 +171,6 @@ public class VariableFactory {
         return variableAssigning != null && VariableType.isTypeMatchForAssignment(variableAssignedType,
                 variableAssigning.getVariableType());
     }
+
 
 }

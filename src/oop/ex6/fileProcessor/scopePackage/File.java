@@ -73,7 +73,7 @@ public class File extends Scope {
         }
         return scopeVariabls;
     }
-    Variable getVariable(String name){
+    public Variable getVariable(String name){
         for (Scope scope:scopes) {
            if (scope.getVariables().containsKey(name)){
             return scope.getVariables().get(name);

@@ -38,7 +38,7 @@ public class FileAnalyzer {
         }
         LineType currentlineType = findLineType(line, isFirstTime);
         if (currentlineType != null) {
-            if (isFirstTime && innerScopeCounter == 0 && currentlineType == LineType.ASSIGNMENT) {
+            if (isFirstTime && innerScopeCounter == 0 && (currentlineType == LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)) {
                 relevantLine = true;
 
             } else {
@@ -48,7 +48,7 @@ public class FileAnalyzer {
                     innerScopeCounter--;
                 }
             }
-            if (!isFirstTime && file.getScopes().size() == 1 && currentlineType == LineType.ASSIGNMENT) {
+            if (!isFirstTime && file.getScopes().size() == File.MIN_SCOPE_SIZE && (currentlineType == LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)) {
                 relevantLine = false;
             }
            if (!relevantLine||cheackReturn(currentlineType)) {
