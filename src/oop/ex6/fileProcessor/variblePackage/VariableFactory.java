@@ -52,13 +52,14 @@ public class VariableFactory {
      * @return variables
      * @throws VariableException if variables are not okay
      */
-    public Variable[] getVariables(LinkedList<String> strings, boolean isAlreadyAssigned) throws VariableException {
+    public Variable[] getVariables(LinkedList<String> strings, boolean isAlreadyAssigned)
+            throws VariableException {
         Variable[] variables = new Variable[strings.size()];
         int counter = 0;
         String variableType = null;
         HashSet<String> currentNames = new HashSet<>();
         for (String variable : strings) {
-            int firstIndex = 0;
+            int var_index = 0;
             String variableName;
             boolean isAssigned = false;
             if (variable.contains("=")) {
@@ -67,8 +68,11 @@ public class VariableFactory {
             variable = variable.trim();
             String[] variableData = variable.split("\\s+(?:\\=\\s*)?");
             String value = null;
-            if (variableData.length < File.MIN_SCOPE_SIZE + 1) {
+            if (variableData.length < File.MIN_SCOPE_SIZE) {
                 throw new VariableException.IllegalVariableNameException();
+            }
+            if(variableData.length >= 2){
+                var_index = 1;
             }
             if (isAssigned) {
                 value = variableData[variableData.length - 1];
@@ -76,17 +80,18 @@ public class VariableFactory {
             boolean isItFinal = false;
             if (variableData[0].equals("final")) {
                 isItFinal = true;
-                firstIndex++;
+                var_index++;
             }
-            if (!currentNames.contains(variableData[1 + firstIndex])) {//in case of double assigment name in the same line.
-                currentNames.add(variableData[1 + firstIndex]);
+            if (!currentNames.contains(variableData[var_index])) {//in case of double assigment name in the same line.
+                currentNames.add(variableData[var_index]);
             } else {
                 throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
             }
             if (!((variableData.length==2&&isAssigned)||(variableData.length==1&&!isAssigned))) {//if thers molty assigment with the same type( boolean a,a,a
-                variableType=variableData[firstIndex];
-                variableName=   variableData[1 + firstIndex];
-            }else if (variableType==null){
+                variableType=variableData[var_index - 1];
+                variableName=   variableData[var_index];
+            }
+            else if (!isAlreadyAssigned&&variableType==null){
                 throw new VariableException.FinalException.AssertionTypeIncompatibleException();//if variable type does not exists.
             }else {
                 variableName=variableData[FIRST_POSITION];
@@ -107,7 +112,10 @@ public class VariableFactory {
                 variables[counter] = new Variable(variableType, variableName,//create variable from reference.
                         value, isItFinal);
             } else {
-                variables[counter] = new Variable(variableType, variableName,
+                //TODO oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+                VariableType valType = VariableType.getVariableType (value);
+                //TODO oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+                variables[counter] = new Variable(valType.toString (), variableName,
                         true, isItFinal);
             }
             counter++;
@@ -124,7 +132,7 @@ public class VariableFactory {
      */
     public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
-        Variable[] variables = getVariables(strings, false);
+        Variable[] variables = getVariables(strings, true);
         for (Variable variable : variables) {
             if (!isLegalReAssignment(variable)) {
                 throw new VariableException.NoVariableNameException();
