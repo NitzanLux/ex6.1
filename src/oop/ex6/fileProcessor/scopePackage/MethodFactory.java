@@ -50,19 +50,21 @@ public class MethodFactory {
     private void methodCall(String line) throws ScopeException {
         String[] sline = sliceLine(line);
         if (file.getMethods().containsKey(sline[0])) {
-            String[] vars = sline[1].split(",");
-            for (int i = 0; i < vars.length; i++) {
-                vars[i] = vars[i].replaceAll("\\s+", "");
-            }
-            for (String var : vars) {
-                var = var.trim();
-                if (VariableType.isValueOfType(var)) {
-                    continue;
+            if (sline.length > 1) {
+                String[] vars = sline[1].split(",");
+                for (int i = 0; i < vars.length; i++) {
+                    vars[i] = vars[i].replaceAll("\\s+", "");
                 }
-                if (!file.isVariableAssigned(var)) {
-                    throw new ScopeException.MethodNotDeclerdException(var);
-                }
+                for (String var : vars) {
+                    var = var.trim();
+                    if (VariableType.isValueOfType(var)) {
+                        continue;
+                    }
+                    if (!file.isVariableAssigned(var)) {
+                        throw new ScopeException.MethodNotDeclerdException(var);
+                    }
 
+                }
             }
         } else {
             throw new ScopeException.MethodNotDeclerdException(sline[0]);
@@ -79,8 +81,8 @@ public class MethodFactory {
     private String[] sliceLine(String line) {
         String[] sline;
         line = line.substring(0, line.indexOf(")"));
-        sline = line.split("\\s*\\(");
-        sline[0] = sline[0].split("\\s+")[1];
+        line = line.trim();
+        sline = line.split("\\s*\\(\\s*");
         return sline;
     }
 
@@ -102,16 +104,18 @@ public class MethodFactory {
      * @throws VariableException
      */
     private HashMap<String, Variable> getVariables(String line) throws VariableException {
+        line = line.trim();
         String[] varLines = sliceLine(line);
-        if(varLines.length>=2){
-            String varLine=varLines[1];
+        if (varLines.length >= 2) {
+            String varLine = varLines[1];
             String[] splitVars = varLine.split(",");
             LinkedList<String> strings = new LinkedList<>();
             strings.addAll(Arrays.asList(splitVars));
             HashMap<String, Variable> variables = new HashMap<>(strings.size());
             {
                 VariableFactory variableFactory = new VariableFactory(file);//todo is it good delegation??????????????????????????????????????????????
-                Variable[] variablesArray = variableFactory.getVariables(strings, true);
+                Variable[] variablesArray = new Variable[0];
+                variablesArray = variableFactory.getVariables(strings, true);
                 for (Variable variable : variablesArray) {
                     variables.put(variable.getName(), variable);
                 }

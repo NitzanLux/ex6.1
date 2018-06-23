@@ -13,18 +13,16 @@ public class Sjavac {
     private static final int IO_ERROR_MSG = 2;
     private static final int ILLEGAL_CODE = 1;
     private static final int SJAVA_PASSD_CODE = 0;
-    private static final int EXIT_CODE = 0;
 
     public static void main(String[] args) {
-        ArrayList<String> sjavaData = new ArrayList<>();
+        ArrayList<String> sjavaData;
 
         try {
             sjavaData = Reader.getInstance().readLines(args[0]);
         } catch (IOException e) {
-            System.out.println(IO_ERROR_MSG);
+            System.out.print(IO_ERROR_MSG);
             System.err.println(e.getMessage());
             return;
-          //  System.exit(EXIT_CODE);
         }
 
         FileAnalyzer fileAnalyzer = new FileAnalyzer();
@@ -32,19 +30,17 @@ public class Sjavac {
             try {
                 fileAnalyzer.anlayzeLine(line);
             } catch (VariableException | ScopeException | NoSuchLineException e) {
-                System.out.println(ILLEGAL_CODE);
+                System.out.print(ILLEGAL_CODE);
                 System.err.println(e.getMessage());
                 return;
-               // System.exit(EXIT_CODE);
             }
         }
         try {
             fileAnalyzer.getMethodFactory().cheakMethodCalls();
         } catch (ScopeException e) {
-            System.out.println(ILLEGAL_CODE);
+            System.out.print(ILLEGAL_CODE);
             System.err.println(e.getMessage());
             return;
-           // System.exit(EXIT_CODE);
         }
         System.out.println(SJAVA_PASSD_CODE);
     }

@@ -25,7 +25,7 @@ public class VariableFactory {
      */
     public void makeAssignment(String line) throws VariableException, ScopeException {
         LinkedList<String> strings = getListedVariables(line);
-        Variable[] vars = getVariables(strings,false);
+        Variable[] vars = getVariables(strings, false);
         for (Variable var : vars) {
             file.getCurrentScope().addVariable(var);
         }
@@ -50,7 +50,7 @@ public class VariableFactory {
      * @return variables
      * @throws VariableException if variables are not okay
      */
-    public Variable[] getVariables(LinkedList<String> strings,boolean isAlreadyAssigned) throws VariableException {
+    public Variable[] getVariables(LinkedList<String> strings, boolean isAlreadyAssigned) throws VariableException {
         Variable[] variables = new Variable[strings.size()];
         int counter = 0;
         for (String variable : strings) {
@@ -59,9 +59,12 @@ public class VariableFactory {
             if (variable.contains("=")) {
                 isAssigned = true;
             }
-            variable=variable.trim();
+            variable = variable.trim();
             String[] variableData = variable.split("\\s+(?:\\=\\s*)?");
             String value = null;
+            if (variableData.length < 2) {//todo megic number;
+                throw new VariableException.IllegalVariableNameException();//todo illigle assigment 04444444444444444444444444444444444444
+            }
             if (isAssigned) {
                 value = variableData[variableData.length - 1];
             }
@@ -70,7 +73,7 @@ public class VariableFactory {
                 isItFinal = true;
                 firstIndex++;
             }
-            if (isAssigned&&!VariableType.isValueOfType(value)) {
+            if (isAssigned && !VariableType.isValueOfType(value)) {
                 if (variableToVaribleAssignmentLeagel(variableData[firstIndex], value)) {
                     Variable variableRefernce = getVariable(value);
                     variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
@@ -79,10 +82,10 @@ public class VariableFactory {
                     throw new VariableException.FinalException.AssertionTypeIncompatibleException();
                 }
 
-            } else if (!isAlreadyAssigned){
+            } else if (!isAlreadyAssigned) {
                 variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
                         value, isItFinal);
-            }else{
+            } else {
                 variables[counter] = new Variable(variableData[firstIndex], variableData[1 + firstIndex],
                         true, isItFinal);
             }
@@ -90,7 +93,6 @@ public class VariableFactory {
         }
         return variables;
     }
-
 
 
     /**
@@ -101,7 +103,7 @@ public class VariableFactory {
      */
     public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
-        Variable[] variables = getVariables(strings,false);
+        Variable[] variables = getVariables(strings, false);
         for (Variable variable : variables) {
             if (!isLegalReAssignment(variable)) {
                 throw new VariableException.NoVariableNameException();
