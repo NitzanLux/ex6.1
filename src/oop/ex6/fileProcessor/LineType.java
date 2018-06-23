@@ -151,10 +151,13 @@ public enum LineType {
         private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:[-\\w]+(?:\\.?\\w+)?)(?:[ \\t]" +
                 "*(?:\\&{2}|\\|{2})[ \\t]*(?:[-\\w]+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
 
-        private static final String ASSIGNMENT_REGEX_STR = "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)" +
-                "[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?:(?!\\=|\\,)[\\-\\.\\w]+)|" +
-                "(?:(?:\\\"|\\').*(?:\\\"|\\'))+)+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=" +
-                "[ \\t]*(?:(?:(?!\\=|\\,)[\\.\\-\\w]+)|(?:(?:\\\"|\\').*(?:\\\"|\\')))+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$";
+        private static final String ASSIGNMENT_REGEX_STR ="^[ \\t]*(?:\\bfinal\\b[ \\t]+)?(?:" +
+                "(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+[\\w]+(?:[ \\t]*(?:\\=[ \\t]*(?:(?!\\=|\\,)" +
+                "(\\w+|(\\\"|\\').*\\1)))|(?:\\,[ \\t]*\\w*[ \\t]*\\w+))*[ \\t]*\\;[ \\t]*$";
+//                "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)" +
+//                "[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?:(?!\\=|\\,)[\\-\\.\\w]+)|" +
+//                "(?:(?:\\\"|\\').*(?:\\\"|\\'))+)+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=" +
+//                "[ \\t]*(?:(?:(?!\\=|\\,)[\\.\\-\\w]+)|(?:(?:\\\"|\\').*(?:\\\"|\\')))+)?[ \\t]*)*[ \\t]*\\;[ \\t]*$";
         private static final String METHOD_REGEX_STR = "^[ \\t]*(?:\\bvoid\\b){1}[ \\t]+[\\w]+[ \\t]" +
                 "*\\([ \\t]*(?:(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+(?:(?!\\" +
                 "bfinal\\b)[\\w])+(?:[ \\t]*\\,[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)[A-Za-z])" +
@@ -184,8 +187,5 @@ public enum LineType {
 
     }
 
-    public static void main(String[] args) {
-        System.out.println(Constants.ASSIGNMENT_REGEX_STR);
-    }
 }
 

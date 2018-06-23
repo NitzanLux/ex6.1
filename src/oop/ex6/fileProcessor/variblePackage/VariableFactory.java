@@ -30,6 +30,7 @@ public class VariableFactory {
         Variable[] vars = getVariables(strings, false);
         for (Variable var : vars) {
             file.getCurrentScope().addVariable(var);
+
         }
     }
 
@@ -71,7 +72,7 @@ public class VariableFactory {
             if (variableData.length < File.MIN_SCOPE_SIZE) {
                 throw new VariableException.IllegalVariableNameException();
             }
-            if(variableData.length >= 2){
+            if (variableData.length >= 2) {
                 var_index = 1;
             }
             if (isAssigned) {
@@ -87,14 +88,13 @@ public class VariableFactory {
             } else {
                 throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
             }
-            if (!((variableData.length==2&&isAssigned)||(variableData.length==1&&!isAssigned))) {//if thers molty assigment with the same type( boolean a,a,a
-                variableType=variableData[var_index - 1];
-                variableName=   variableData[var_index];
-            }
-            else if (!isAlreadyAssigned&&variableType==null){
+            if (!((variableData.length == 2 && isAssigned) || (variableData.length == 1 && !isAssigned))) {//if thers molty assigment with the same type( boolean a,a,a
+                variableType = variableData[var_index - 1];
+                variableName = variableData[var_index];
+            } else if (!isAlreadyAssigned && variableType == null) {
                 throw new VariableException.FinalException.AssertionTypeIncompatibleException();//if variable type does not exists.
-            }else {
-                variableName=variableData[FIRST_POSITION];
+            } else {
+                variableName = variableData[FIRST_POSITION];
             }
             if (isAssigned && !VariableType.isValueOfType(value)) {//if variable is assigned by reference.
                 if (variableToVaribleAssignmentLeagel(variableType, value)) {//chack if type are fit.
@@ -113,9 +113,9 @@ public class VariableFactory {
                         value, isItFinal);
             } else {
                 //TODO oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-                VariableType valType = VariableType.getVariableType (value);
+                //VariableType valType = VariableType.getVariableType (value);
                 //TODO oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-                variables[counter] = new Variable(valType.toString (), variableName,
+                variables[counter] = new Variable(variableType, variableName,
                         true, isItFinal);
             }
             counter++;
@@ -132,12 +132,17 @@ public class VariableFactory {
      */
     public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
-        Variable[] variables = getVariables(strings, true);
-        for (Variable variable : variables) {
-            if (!isLegalReAssignment(variable)) {
+        //Variable[] variables = getVariables(strings, true);
+        line = line.replace(";", "");
+        line = line.trim();
+        String[] variables = line.split("[ \\t]*\\,[ \\t]*");
+        for (String variable : variables) {
+            String[] currentVariable = variable.split("[ \\t]*\\=[ \\t]*");
+            if (currentVariable.length == 2 && isLegalReAssignment(currentVariable[0], currentVariable[1])) {//todo duplicate code
+                file.getVariable(currentVariable[0]).setValueAssigned();
+            } else {
                 throw new VariableException.NoVariableNameException();
             }
-            file.getVariable(variable.getName()).setValueAssigned();
 
         }
     }
@@ -145,21 +150,24 @@ public class VariableFactory {
     /**
      * checks if variable assign is legal
      *
-     * @param variable
+     * @param
      * @return
      */
-    private boolean isLegalReAssignment(Variable variable) {
-        String name = variable.getName();
-        for (Scope current : file.getScopes()) {
-            if (current.getVariables().containsKey(name)) {
-                Variable originalVariable = current.getVariables().get(name);
-                if (originalVariable.getVariableType().equals(variable.getVariableType())
-                        && !originalVariable.isFinal()) {
-                    originalVariable.setValueAssigned();
-                    return true;
-                }
+    private boolean isLegalReAssignment(String variableName, String value) {
+        Variable variable = file.getVariable(variableName);
+        Variable assigningVariable = file.getVariable(value);
+        VariableType assigningType;
+        if (assigningVariable == null) {
+            assigningType = VariableType.getVariableType(value);
+        } else {
+            if (assigningVariable.isValueAssigned()) {
+                assigningType = assigningVariable.getVariableType();
+            } else {
                 return false;
             }
+        }
+        if (variable != null && !variable.isFinal()) {
+            return VariableType.isTypeIsParsable(assigningType, variable.getVariableType());
         }
         return false;
     }
