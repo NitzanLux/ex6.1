@@ -15,5 +15,9 @@ public class ConditionScope extends Scope{
         return variables;
     }
 
-
+    @Override
+    public boolean closeScope(Scope parentScope) {
+        parentScope.assigendInScopeVariables.addAll(assigendInScopeVariables);
+        return true;
+    }
 }

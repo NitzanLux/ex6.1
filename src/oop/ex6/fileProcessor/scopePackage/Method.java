@@ -32,8 +32,10 @@ class Method extends Scope {
          isReturn=true;
     }
     @Override
-    public boolean closeScope() {
-        super.closeScope();
+    public boolean closeScope(Scope parent) {
+        for (Variable variable:assigendInScopeVariables) {
+            variable.reStoreVariable();
+        }
         return isReturn;
     }
     boolean variblesFitToMethodType(int position,VariableType variableType){

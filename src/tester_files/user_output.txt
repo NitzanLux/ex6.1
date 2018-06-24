@@ -1,4 +1,4 @@
-20:43:52
+22:30:38
 
 school solution#User solution#result#Test name
 
@@ -461,7 +461,7 @@ school solution#User solution#result#Test name
 1		1		passed		tester_files\Tests\SchoolTests\test503.sjava		
 1		1		passed		tester_files\Tests\SchoolTests\test504.sjava		
 0		0		passed		tester_files\Tests\SchoolTests\test505.sjava		
-0		0		passed		tester_files\Tests\specificTests\83.sjava		
+1		1		passed		tester_files\Tests\specificTests\20.sjava		
 
 passed 460 out of 460 tests.
 

@@ -37,12 +37,7 @@ public abstract class Scope {
         return variables;
     }
 
-    public boolean closeScope(){
-        for (Variable variable:assigendInScopeVariables) {
-            variable.reStoreVariable();
-        }
-        return true;
-    }
+    public abstract boolean closeScope(Scope parentScope);
 
     public void setVariables(HashMap<String, Variable> variables) {
         this.variables = variables;

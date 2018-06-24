@@ -8,21 +8,22 @@ import java.util.LinkedList;
 
 public class File extends Scope {
 
-    public static final int MIN_SCOPE_SIZE=1;
+    public static final int MIN_SCOPE_SIZE = 1;
     private HashMap<String, Method> methods = new HashMap<>();
 
     private LinkedList<Scope> scopes = new LinkedList<>();
+
     public File() {
         super();
         addScope(this);
     }
 
     @Override
-    public boolean closeScope() {
-        return true;
+    public boolean closeScope(Scope parent) {
+        return false;
     }
 
-    HashMap<String,Method> getMethods() {
+    HashMap<String, Method> getMethods() {
         return methods;
     }
 
@@ -51,21 +52,24 @@ public class File extends Scope {
     public void endScope() throws ScopeException {
         Scope scope;
         scope = scopes.getFirst();
-        if (scope.closeScope()&&scopes.size()> MIN_SCOPE_SIZE) {
-            scopes.remove(scope);
-        } else {
-            throw new ScopeException.ScoopCloserException();
+        if (scopes.size() > File.MIN_SCOPE_SIZE) {
+            if (scope.closeScope(scopes.get(1)) && scopes.size() > MIN_SCOPE_SIZE) {
+                scopes.remove(scope);
+                return;
+            }
         }
+        throw new ScopeException.ScoopCloserException();
     }
 
     public LinkedList<Scope> getScopes() {
         return scopes;
     }
-    HashMap<String,Variable> getScopeVariables(){
-        HashMap<String,Variable> scopeVariabls=new HashMap<>();
-        for (Scope scope:scopes) {
-            for (Variable variable:scope.getVariables().values()) {
-                if (!scopeVariabls.containsValue(variable)){
+
+    HashMap<String, Variable> getScopeVariables() {
+        HashMap<String, Variable> scopeVariabls = new HashMap<>();
+        for (Scope scope : scopes) {
+            for (Variable variable : scope.getVariables().values()) {
+                if (!scopeVariabls.containsValue(variable)) {
                     scopeVariabls.put(variable.getName(), new Variable(variable));
                 }
 
@@ -73,11 +77,12 @@ public class File extends Scope {
         }
         return scopeVariabls;
     }
-    public Variable getVariable(String name){
-        for (Scope scope:scopes) {
-           if (scope.getVariables().containsKey(name)){
-            return scope.getVariables().get(name);
-           }
+
+    public Variable getVariable(String name) {
+        for (Scope scope : scopes) {
+            if (scope.getVariables().containsKey(name)) {
+                return scope.getVariables().get(name);
+            }
         }
         return null;
     }
