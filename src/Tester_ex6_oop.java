@@ -147,9 +147,9 @@ public class Tester_ex6_oop {
 				String[] SchoolPrints = runTestWithSchoolSolution(arr[0]);
 				assertTrue(SchoolPrints[0].equals(userPrints[0])); // both should be 2.
 				System.out.println("school_solution error massage:");
-				System.out.println(userPrints[1]);
-				System.out.println("user massage:");
 				System.out.println(SchoolPrints[1]);
+				System.out.println("user massage:");
+				System.out.println(userPrints[1]);
 			} catch (Exception e) {
 				System.err.println("your program throw an exception (and that's not OK).");
 				e.printStackTrace();
