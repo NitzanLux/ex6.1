@@ -15,8 +15,5 @@ public class ConditionScope extends Scope{
         return variables;
     }
 
-    @Override
-    boolean closeScope() {
-        return true;
-    }
+
 }

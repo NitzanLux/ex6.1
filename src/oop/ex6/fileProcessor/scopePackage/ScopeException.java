@@ -22,6 +22,14 @@ public abstract class ScopeException extends Exception {
             super(CLOSER_SCOOP_ERROR_MSG);
         }
     }
+
+    public static class ReturnCloserException extends ScopeException{
+        private static final String CLOSER_RETURN_ERROR_MSG = "the return closer is illegal";
+
+        public ReturnCloserException() {
+            super(CLOSER_RETURN_ERROR_MSG);
+        }
+    }
     static class VeriableNotAssignedException extends ScopeException{
         private static final String VARIABLE_NOT_ASSIGNED_MSG ="variable %s is not assigned!";
 
@@ -50,11 +58,11 @@ public abstract class ScopeException extends Exception {
             super(CONDITION_IS_UNVALID_MSG);
         }
     }
-    static class MethodParameterProblemException extends ScopeException{
-        private static final String METHOD_PARAMETER_UNFIT_MSG ="method parameters are unfit";
+    static class IllegalMethodNameException extends ScopeException{
+        private static final String METHOD_NAME_ERROR_MSG ="method name is illegal";
 
-        MethodParameterProblemException() {
-            super(METHOD_PARAMETER_UNFIT_MSG);
+        IllegalMethodNameException() {
+            super(METHOD_NAME_ERROR_MSG);
         }
     }
 

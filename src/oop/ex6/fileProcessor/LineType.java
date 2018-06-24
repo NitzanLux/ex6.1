@@ -3,6 +3,7 @@ package oop.ex6.fileProcessor;
 
 import oop.ex6.fileProcessor.scopePackage.ScopeException;
 import oop.ex6.fileProcessor.variblePackage.VariableException;
+import oop.ex6.fileProcessor.variblePackage.VariableType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,9 +13,9 @@ import java.util.regex.Pattern;
  */
 public enum LineType {
     METHOD(Constants.METHOD_REGEX_STR, ScoopPosition.OUTER_SCOPE,true)
-            {public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess)
-                    throws VariableException {
-                if (this.isMatch(line)){
+            {public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound)
+                    throws VariableException, ScopeException {
+                if (isFound||this.isMatch(line)){
                     if (toProcess) {
                         fileAnalyzer.getMethodFactory().createMethod(line);
                     }
@@ -23,9 +24,9 @@ public enum LineType {
                 return false;
             }},
     ASSIGNMENT(Constants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH,false){
-        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess)
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound)
                 throws VariableException, ScopeException {
-            if (this.isMatch(line)){
+            if (isFound||isAssignmentFit(line)){
                 if (toProcess) {
                     fileAnalyzer.getVariableFactory().makeAssignment(line);
                 }
@@ -33,23 +34,53 @@ public enum LineType {
             }
             return false;
         }
-    },
+        private boolean isAssignmentFit(String line){
+            line=line.trim();
+            boolean assignedPrefix=false;
+            if (line.endsWith(";")){
+                line=line.substring(0,line.length()-1);
+                String[] variables=line.split("[ \\t]*\\,[ \\t]*",-1);
+                for (String variableLine:variables){
+                    if (!assignedPrefix){
+                        String[] firstVar=variableLine.split("[ \\t]*(?:[ \\t]|\\=)[ \\t]*");
+                        for (String varType:firstVar) {
+                            try {
+                                VariableType.parseType(varType);
+                                assignedPrefix=true;
+                                break;
+                            } catch (VariableException ignored) {
+                            }
+                        }
+                        if (!assignedPrefix) {
+                            return false;
+                        }
+                    }
+                    if (!this.isMatch(variableLine)){
+                        return false;
+                    }
+                }
+                return true;
+
+            }
+            return false;
+        }
+        },
     IF(String.format(Constants.CONDITION_REGEX_STR, Constants.IF_STATMENT), ScoopPosition.INNER_SCOPE,true){
         @Override
-        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess) throws ScopeException {
-            return coditisionProcessor(line,fileAnalyzer,toProcess);
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws ScopeException {
+            return coditisionProcessor(line,fileAnalyzer,toProcess,isFound);
         }
     },
     WHILE(String.format(Constants.CONDITION_REGEX_STR, Constants.WHILE_STATMENT), ScoopPosition.INNER_SCOPE,true){
         @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess) throws ScopeException, VariableException {
-                return coditisionProcessor(line,fileAnalyzer,toProcess);
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws ScopeException, VariableException {
+                return coditisionProcessor(line,fileAnalyzer,toProcess,isFound);
         }
     },
     METHOD_CALL(Constants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE,false){
         @Override
-        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess) throws ScopeException {
-            if (this.isMatch(line)){
+        public boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws ScopeException {
+            if (isFound||this.isMatch(line)){
                 if (toProcess) {
                     fileAnalyzer.getMethodFactory().addMethodCall(line);
                 }
@@ -60,8 +91,8 @@ public enum LineType {
     },
     RETURN(Constants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE,false){
         @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess) {
-            if (this.isMatch(line)){
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) {
+            if (isFound||this.isMatch(line)){
                 if (toProcess) {
                     fileAnalyzer.getMethodFactory().methodReturn();
                 }
@@ -70,10 +101,10 @@ public enum LineType {
             return false;
         }
     },
-    REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.INNER_SCOPE,false){
+    REASSIGNMENT(Constants.REASSIGNMENT_REGEX_STR, ScoopPosition.BOTH,false){
         @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess) throws VariableException {
-            if (this.isMatch(line)){
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws VariableException {
+            if (isFound||this.isMatch(line)){
                 if (toProcess) {
                     fileAnalyzer.getVariableFactory().reAssignment(line);
                 }
@@ -84,14 +115,14 @@ public enum LineType {
     },
     BLANK_LINE(Constants.BLANK_LINE_REGEX_STR,ScoopPosition.BOTH,false) {
         @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess) {
-            return (this.isMatch(line)||line==null);
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) {
+            return (isFound||this.isMatch(line)||line==null);
         }
     },
     CLOSE_SCOPE(Constants.CLOSE_SCOPE_REGEX_STR,ScoopPosition.BOTH,false) {
         @Override
-        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess) throws ScopeException {
-            if (this.isMatch(line)){
+        public boolean processSentence(String line,FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws ScopeException {
+            if (isFound||this.isMatch(line)){
                 if (toProcess) {
                     fileAnalyzer.getFile().endScope();
                 }
@@ -122,7 +153,7 @@ public enum LineType {
         }
     }
 
-    public abstract boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess)
+    public abstract boolean processSentence(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound)
             throws VariableException,ScopeException;
 
     boolean isMatch(String line){
@@ -130,8 +161,8 @@ public enum LineType {
         return matcher.matches();
     }
 
-    boolean coditisionProcessor(String line, FileAnalyzer fileAnalyzer,boolean toProcess) throws ScopeException {
-        if (this.isMatch(line)){
+    boolean coditisionProcessor(String line, FileAnalyzer fileAnalyzer,boolean toProcess,boolean isFound) throws ScopeException {
+        if (isFound||this.isMatch(line)){
             if (toProcess) {
                 fileAnalyzer.getConditionFactory().assignScope(line);
             }
@@ -151,9 +182,16 @@ public enum LineType {
         private static final String CONDITION_REGEX_STR ="^[ \\t]*%s[ \\t]*\\([ \\t]*(?:[-\\w]+(?:\\.?\\w+)?)(?:[ \\t]" +
                 "*(?:\\&{2}|\\|{2})[ \\t]*(?:[-\\w]+(?:\\.?\\w+)?))*[ \\t]*\\)[ \\t]*\\{[ \\t]*$";
 
-        private static final String ASSIGNMENT_REGEX_STR ="^[ \\t]*(?:\\bfinal\\b[ \\t]+)?(?:" +
-                "(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+[\\w]+(?:[ \\t]*(?:\\=[ \\t]*(?:(?!\\=|\\,)" +
-                "(\\w+|(\\\"|\\').*\\1)))|(?:\\,[ \\t]*\\w*[ \\t]*\\w+))*[ \\t]*\\;[ \\t]*$";
+        private static final String ASSIGNMENT_REGEX_STR ="^[ \\t]*(?:\\bfinal\\b)?[ \\t]*(?:(?!\\breturn\\b)[\\w]+" +
+                "[ \\t]+)?(?!\\breturn\\b)[\\w]+(?:[ \\t]*\\=[ \\t]*(?:(?:[\\-\\.\\w]+)|(?:(\\'|\\\").*\\1)))?[ \\t]*$";
+//                "^[ \\t]*(?:\\bfinal\\b)?[ \\t]*(?:(?!\\breturn\\b)" +
+//                "[\\w]+[ \\t]+)?(?!\\breturn\\b)[\\w]+(?:[ \\t]*\\=(?:[ \\t]*[\\-\\.\\w]+)|(?:(?:\\'|\\\")" +
+//                ".*(?:\\'|\\\")))?[ \\t]*$";
+//                "^[ \\t]*(?:\\bfinal\\b)?[ \\t]*(?:[\\w]+[ \\t]+)?" +
+//                "[\\w]+(?:[ \\t]*\\=(?:[ \\t]*[\\-\\.\\w]+)|(?:(?:\\'|\\\").*(?:\\'|\\\")))?[ \\t]*$";
+//                "^[ \\t]*(?:\\bfinal\\b[ \\t]+)?(?:" +
+//                "(?!\\bfinal\\b)[A-Za-z]){2,}[ \\t]+[\\w]+(?:[ \\t]*(?:\\=[ \\t]*(?:(?!\\=|\\,)" +
+//                "(\\w+|(\\\"|\\').*\\1)))|(?:\\,[ \\t]*\\w*[ \\t]*\\w+))*[ \\t]*\\;[ \\t]*$";
 //                "^[ \\t]*(?:final )?\\b[ \\t]*(?:(?!\\bfinal\\b)" +
 //                "[A-Za-z]){2,}[ \\t]+(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=[ \\t]*(?:(?:(?!\\=|\\,)[\\-\\.\\w]+)|" +
 //                "(?:(?:\\\"|\\').*(?:\\\"|\\'))+)+)?(?:[ \\t]*\\,[ \\t]*(?:(?!\\bfinal\\b)[\\w])+(?:[ \\t]*\\=" +

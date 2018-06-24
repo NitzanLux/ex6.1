@@ -28,7 +28,14 @@ class Reader {
      */
     ArrayList<String> readLines(String path) throws IOException {
         ArrayList<String> sjavaData=new ArrayList<>();
+//        if (path.matches(".*\\..*\\..*")){
+//            throw new IOException();
+//        }
             try (BufferedReader bufferedReader=new BufferedReader(new FileReader(path))) {
+                File f = new File(path);
+                if(!f.exists()){
+                    throw new IOException();
+                }
                 int counter = 0;
                 String line;
                 while ((line = bufferedReader.readLine() )!= null) {

@@ -29,7 +29,7 @@ public class MethodFactory {
      * @param line
      * @throws VariableException
      */
-    public void createMethod(String line) throws VariableException {
+    public void createMethod(String line) throws VariableException, ScopeException {
         String methodName = getName(line);
         ArrayList<Variable> variables =getArrayVariabls(line);
         ArrayList<VariableType> variableTypes=variableToTypesInOrder(variables);
@@ -72,7 +72,7 @@ public class MethodFactory {
                     }
                     Variable currentVar=currentVariables.get(var);
                     if (currentVar==null||!currentVar.isValueAssigned()) {
-                        throw new ScopeException.MethodNotDeclerdException(var);
+                        throw new ScopeException.VeriableNotAssignedException(var);
                     }
 
                 }
@@ -134,7 +134,7 @@ public class MethodFactory {
         }
         return variableHashMap;
     }
-    private ArrayList<Variable> getArrayVariabls (String line) throws VariableException {
+    private ArrayList<Variable> getArrayVariabls (String line) throws VariableException, ScopeException.AlreadyAssignedException {
         line = line.trim();
         String[] varLines = sliceLine(line);
         if (varLines.length >= 2) {
@@ -144,9 +144,20 @@ public class MethodFactory {
             ArrayList< Variable> variables = new ArrayList<>(strings.size());
             strings.addAll(Arrays.asList(splitVars));
             {
-                VariableFactory variableFactory = new VariableFactory(file);//todo is it good delegation??????????????????????????????????????????????
-                Variable[] variablesArray = variableFactory.getVariables(strings, true);
-                variables.addAll(Arrays.asList(variablesArray));
+                HashSet<String> names=new HashSet<>();
+                VariableFactory variableFactory = new VariableFactory(file);
+                Variable[] variablesArray=null;
+                for (String var:strings) {
+                    LinkedList<String >varLinkedList=new LinkedList<>();
+                    varLinkedList.add(var);
+                    variablesArray = variableFactory.getVariables(varLinkedList);
+                    variablesArray[0].assignedVariable(file.getCurrentScope());
+                    if (names.contains(variablesArray[0].getName())){
+                        throw new ScopeException.AlreadyAssignedException(variablesArray[0].getName());
+                    }
+                    variables.addAll(Arrays.asList(variablesArray));
+                    names.add(variablesArray[0].getName());
+                }
             }
             return variables;
         }

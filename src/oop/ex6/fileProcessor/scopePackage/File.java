@@ -18,7 +18,7 @@ public class File extends Scope {
     }
 
     @Override
-    boolean closeScope() {
+    public boolean closeScope() {
         return true;
     }
 
@@ -66,7 +66,7 @@ public class File extends Scope {
         for (Scope scope:scopes) {
             for (Variable variable:scope.getVariables().values()) {
                 if (!scopeVariabls.containsValue(variable)){
-                    scopeVariabls.put(variable.getName(),variable);
+                    scopeVariabls.put(variable.getName(), new Variable(variable));
                 }
 
             }

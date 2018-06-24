@@ -16,8 +16,8 @@ public class Sjavac {
     private static final int SJAVA_PASSD_CODE = 0;
 
     public static void main(String[] args) {
-        ArrayList<String> sjavaData;
 
+        ArrayList<String> sjavaData;
         try {
             sjavaData = Reader.getInstance().readLines(args[0]);
         } catch (IOException e) {

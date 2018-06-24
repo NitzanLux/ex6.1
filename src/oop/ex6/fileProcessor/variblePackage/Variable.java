@@ -1,5 +1,7 @@
 package oop.ex6.fileProcessor.variblePackage;
 
+import oop.ex6.fileProcessor.scopePackage.Scope;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +12,13 @@ public class Variable {
     private VariableType variableType;
     private static final Pattern namePattern=Pattern.compile("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");
 
+    public Variable(Variable variable){
+        this.isValueAssigned=variable.isValueAssigned;
+        this.isFinal = variable.isFinal;
+        this.variableName = variable.getName();
+        this.variableType = variable.getVariableType();
+    }
+    Variable(){}
     Variable(String type, String variableName, String value, boolean isFinal)
             throws VariableException{
         setVariable(type,variableName,isFinal);
@@ -44,25 +53,32 @@ public class Variable {
 
     private void setVariable(String type, String variableName, boolean isFinal) throws VariableException {
         this.isFinal = isFinal;
-            this.variableType = VariableType.parseType(type);
+        this.variableType = VariableType.parseType(type);
         setVariableName(variableName);
 
 
     }
-
+    public void assignedVariable(Scope scope) throws VariableException {
+        scope.reAssignVariable(this,!isValueAssigned);
+        this.isValueAssigned=true;
+    }
+    public void  reStoreVariable(){
+        this.isValueAssigned=false;
+    }
     public String getName(){
         return variableName;
     }
 
     public void assignVariable(String value) throws VariableException {
-        if (isFinal&&isValueAssigned){
-            throw new  VariableException.FinalException.FinalAssignedAlradyException();
-        }
         if(variableType.isFitValue(value)){
             isValueAssigned = true;
         }else{
+            if (isFinal){
+                throw new  VariableException.FinalException.FinalAssignedAlradyException();
+            }
             throw new VariableException.ValueNotMatchingTypeException();
         }
+
     }
 
     private void setVariableName(String variableName) throws VariableException.NoVariableNameException {
@@ -75,9 +91,6 @@ public class Variable {
 
     }
 
-    void setValueAssigned(){
-        isValueAssigned = true;
-    }
 
     public VariableType getVariableType() {
         return variableType;

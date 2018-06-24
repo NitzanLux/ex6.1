@@ -32,48 +32,49 @@ public class FileAnalyzer {
     }
 
     public void anlayzeLine(String line, boolean isFirstTime) throws VariableException, ScopeException, NoSuchLineException {
-        boolean relevantLine = !isFirstTime;
-        if (!isFirstTime) {
-            innerScopeCounter = 0;
+        boolean isInnerScope;
+        if (isFirstTime) {
+            isInnerScope=innerScopeCounter!=0;
+        }else {
+            isInnerScope=file.getScopes().size()>File.MIN_SCOPE_SIZE;
         }
-        LineType currentlineType = findLineType(line, isFirstTime);
-        if (currentlineType != null) {
-            if (isFirstTime && innerScopeCounter == 0 && (currentlineType == LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)) {
-                relevantLine = true;
-
-            } else {
-                if (currentlineType.isScopeCreater()) {
-                    innerScopeCounter++;
-                } else if (currentlineType == LineType.CLOSE_SCOPE) {
-                    innerScopeCounter--;
+        LineType currentlineType = findLineType(line,isInnerScope);
+        if (currentlineType==null){
+            throw new NoSuchLineException();
+        }
+        if (isFirstTime){
+            if (currentlineType.isScopeCreater()){
+                innerScopeCounter++;
+            }else if (currentlineType==LineType.CLOSE_SCOPE){
+                innerScopeCounter--;
+            }else if (innerScopeCounter==0&&(currentlineType==LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)){
+                currentlineType.processSentence(line,this,true,true);
+            }
+        }else {
+            if (!((currentlineType==LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)
+                    &&file.getScopes().size()==File.MIN_SCOPE_SIZE)) {
+                if (!cheackReturn(currentlineType)){
+                    throw new ScopeException.ReturnCloserException();
                 }
+                currentlineType.processSentence(line,this,true,true);
             }
-            if (!isFirstTime && file.getScopes().size() == File.MIN_SCOPE_SIZE && (currentlineType == LineType.ASSIGNMENT||currentlineType==LineType.REASSIGNMENT)) {
-                relevantLine = false;
-            }
-           if (!relevantLine||cheackReturn(currentlineType)) {
-               currentlineType.processSentence(line, this, relevantLine);
-               return;
-           }
         }
-        throw new NoSuchLineException();
     }
 
     private boolean cheackReturn(LineType lineType) {
-        if (lineType == LineType.RETURN && file.getScopes().size() == 2) {
+        if (lineType == LineType.RETURN && file.getScopes().size() == File.MIN_SCOPE_SIZE+1) {
             isReturn = true;
-            return true;
+        }else if (!(lineType == LineType.CLOSE_SCOPE && file.getScopes().size() == File.MIN_SCOPE_SIZE+1)){
+            isReturn=false;
         }
-        boolean answr =(isReturn||lineType!=LineType.CLOSE_SCOPE||file.getScopes().size()!=2);
-        isReturn=false;
-        return answr;
+        return (lineType!=LineType.CLOSE_SCOPE||file.getScopes().size()!=File.MIN_SCOPE_SIZE+1||isReturn);
 
     }
 
-    private LineType findLineType(String line, boolean isFirstTime) throws VariableException, ScopeException {
+    private LineType findLineType(String line,boolean isInnerScope) throws VariableException, ScopeException {
         for (LineType lineType : LineType.values()) {
-            if (!isFirstTime) {/**/
-                if (file.getScopes().size() > 1) {
+            /**/
+                if (isInnerScope) {
                     if (!lineType.scoopAtPosition(true)) {
                         continue;
                     }
@@ -82,8 +83,7 @@ public class FileAnalyzer {
                         continue;
                     }
                 }
-            }
-            if (lineType.processSentence(line, this, false)) {
+            if (lineType.processSentence(line, this, false,false)) {
                 return lineType;
             }
         }
