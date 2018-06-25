@@ -9,6 +9,7 @@ import oop.ex6.fileProcessor.variblePackage.VariableException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**The main class that runs the compiler*/
 public class Sjavac {
     /*-CONSTANT-*/
     private static final int IO_ERROR_MSG = 2;

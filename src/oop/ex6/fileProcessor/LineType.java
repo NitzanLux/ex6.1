@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  */
 public enum LineType {
     /**a method declaration line*/
-    METHOD(RegexConstants.METHOD_REGEX_STR, ScoopPosition.OUTER_SCOPE, true) {
+    METHOD(RegexConstants.METHOD_REGEX_STR, ScopePosition.OUTER_SCOPE, true) {
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound)
                 throws VariableException, ScopeException {
@@ -28,7 +28,7 @@ public enum LineType {
     },
 
     /**variables assignment line*/
-    ASSIGNMENT(RegexConstants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH, false) {
+    ASSIGNMENT(RegexConstants.ASSIGNMENT_REGEX_STR, ScopePosition.BOTH, false) {
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound)
                 throws VariableException, ScopeException {
@@ -79,7 +79,7 @@ public enum LineType {
 
     /**if scope declaration line*/
     IF(String.format(RegexConstants.CONDITION_REGEX_STR, RegexConstants.IF_STATMENT),
-            ScoopPosition.INNER_SCOPE, true) {
+            ScopePosition.INNER_SCOPE, true) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound) throws ScopeException {
@@ -89,7 +89,7 @@ public enum LineType {
 
     /**while scope declaration line*/
     WHILE(String.format(RegexConstants.CONDITION_REGEX_STR, RegexConstants.WHILE_STATMENT),
-            ScoopPosition.INNER_SCOPE, true) {
+            ScopePosition.INNER_SCOPE, true) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound) throws ScopeException {
@@ -98,7 +98,7 @@ public enum LineType {
     },
 
     /**method call line*/
-    METHOD_CALL(RegexConstants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE, false) {
+    METHOD_CALL(RegexConstants.METHOD_CALL_REGEX_STR, ScopePosition.INNER_SCOPE, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound) {
@@ -113,7 +113,7 @@ public enum LineType {
     },
 
     /**return line*/
-    RETURN(RegexConstants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE, false) {
+    RETURN(RegexConstants.RETURN_REGEX_STR, ScopePosition.INNER_SCOPE, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) {
             if (isFound || this.isMatch(line)) {
@@ -127,7 +127,7 @@ public enum LineType {
     },
 
     /**reassignment line*/
-    REASSIGNMENT(RegexConstants.REASSIGNMENT_REGEX_STR, ScoopPosition.BOTH, false) {
+    REASSIGNMENT(RegexConstants.REASSIGNMENT_REGEX_STR, ScopePosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) throws VariableException {
             if (isFound || this.isMatch(line)) {
@@ -141,7 +141,7 @@ public enum LineType {
     },
 
     /**blank line, or documentation*/
-    BLANK_LINE(RegexConstants.BLANK_LINE_REGEX_STR, ScoopPosition.BOTH, false) {
+    BLANK_LINE(RegexConstants.BLANK_LINE_REGEX_STR, ScopePosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) {
             return (isFound || this.isMatch(line) || line == null);
@@ -149,7 +149,7 @@ public enum LineType {
     },
 
     /**close scope line*/
-    CLOSE_SCOPE(RegexConstants.CLOSE_SCOPE_REGEX_STR, ScoopPosition.BOTH, false) {
+    CLOSE_SCOPE(RegexConstants.CLOSE_SCOPE_REGEX_STR, ScopePosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) throws ScopeException {
             if (isFound || this.isMatch(line)) {
@@ -163,7 +163,7 @@ public enum LineType {
     };
 
     /**the line scope position*/
-    private final ScoopPosition scopePosition;
+    private final ScopePosition scopePosition;
     /**the regex pattern .*/
     private final Pattern regex;
 
@@ -176,7 +176,7 @@ public enum LineType {
      * @param scopePosition the line scope position.
      * @param scopeCreater true if the line create new scope , false otherwise.
      */
-    LineType(String regex, ScoopPosition scopePosition, boolean scopeCreater) {
+    LineType(String regex, ScopePosition scopePosition, boolean scopeCreater) {
         this.regex = Pattern.compile(regex);
         this.scopePosition = scopePosition;
         this.scopeCreater = scopeCreater;
@@ -275,9 +275,9 @@ public enum LineType {
     }
 
     /**
-     *inner enum that represeent the current scope position;
+     *inner enum that represent the current scope position;
      */
-    private enum ScoopPosition {
+    private enum ScopePosition {
         /**
          * an only inner scope
          */
@@ -304,7 +304,7 @@ public enum LineType {
          * @param isOuter if the line type should be in outer scope.
          * @param isInner if the line type should be in inner scope.
          */
-        ScoopPosition(boolean isOuter, boolean isInner) {
+        ScopePosition(boolean isOuter, boolean isInner) {
             this.inInnerScope = isInner;
             this.inOuterScope = isOuter;
         }

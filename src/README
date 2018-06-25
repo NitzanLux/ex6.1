@@ -1,0 +1,88 @@
+eldarh
+nitzanlux
+
+=============================
+=      File description     =
+=============================
+In this exercise we have implemented a simple-java compiler.
+Basically, it gets an s-java (text) file, and returns:
+2 - if the path is not valid (IOException)
+1 - if the code didn't compile, and also basically what didn't
+0 - if the code compiles
+The files are:
+
+fileProcessor:
+
+    * FileAnalyzer.java - responsible for analyzing the File object
+    * LineType.java - a enum that represent a format of a line that decides by regex.
+        Has a sub enum: ScopePosition, represent the current scope position.
+    * NoSuchLineException.java - responsible for exceptions of illegal line
+
+    scopePackage - a package that contains all the classes that deal with scopes:
+    * ConditionFactory.java - implements a class which we call when we get a condition line. inherit scope.
+    * ConditionScope.java - implements a class represents a condition (if/while)
+    * File.java - implements a class represents the file we work on.
+    * Method.java - implements method class inherit scope. has a subclass -
+        MethodCall: static class for case of method call
+    * MethodFactory.java - implements a class we call when we find a method declare line.
+    * Scope.java - implements an abstract class scope
+    * ScopeException.java - implements all the exceptions of scopes
+
+    variablePackage -  package that contains all the classes that deal with variables:
+    * Variable.java - implements a class of variable object
+    * VariableFactory.java - implements a class that is used to deal with variable
+        assignments and reassignments
+    * VariableException - implements all the exceptions of variables
+
+main:
+
+    * Reader.java - a single tone class which read the file from a given path.
+    * Sjavac - The main class that runs the compiler.
+
+=============================
+=          Design           =
+=============================
+The basic idea of our design was making it as modular as possible, so in time we could add any type of
+java instances as easily as possible. Therefore, we decided to deal with scopes in a certain way, and
+with variables in a different way.
+A scope is any type of declaration that starts with "{", and ends with "}", with the
+exception of File object. Therefore we decided to implement an abstract father class Scope which is compatible
+with any type of scope in java.
+Currently we only implemented two subclasses that extend it: Condition and Method.
+In case of method, we currently support only void type, but adding anther type will only mean make
+other subclasses that extend method and therefore extend scope.
+On the other hand, condition can actually deal with a little more fixings to other types of
+condition scopes like else and for with very little effort needed to make it work.
+About Variables, any type we add to the VariableType Enum will work as expected, no need to change
+anything in the other classes (Variable and factory).
+No we get to the cool part:
+FileAnalyzer is like the main thing here: It is a public class, where its objects hold four data members:
+- File object
+- VariableFactory
+- MethodFactory
+- ScopeFactory
+Each of the factory objects is called in case needed, and then generates the line analyzer has found to fit,
+using the enum LineType.
+On the outer level we have the Sjavac compiler - our main method. It first runs reader, then creates a
+FileAnalyzer object, that itself can compile the code in our text file line by line, until we have an output.
+
+=============================
+=  Implementation details   =
+=============================
+The basic idea in our implementation was minimal API. I could give you many examples for how we did it,
+but instead I'll give you one. The best one.
+In VariableFactory class, the method "getVariables" gets a code line, and extracts the variables from it.
+We have noticed that assignment and method declaration has similar outlines, except for one thing:
+in variable assignment the type initializer is in the beginning of the line, and so is the final init.
+But in methods we have the initializer between the commas, before each variable name. So we found out we could
+do it with the same method in this way - after the regex already decide if its a method or assignment,
+we send the raw string to the getVariables method, which first initializes it type holder to be null.
+Then after parsing, every iteration over a new variable we check if it initialized with a type.
+If yes, type changes to it, else it stays as it was foe the previous variable(s).
+So the only thing making the difference is whether the line was sent from VariableFactory or MethodFactory.
+This is only one example for the many times we understood we can use the same method for different reasons,
+and so to implement the minimal API principle.
+
+=============================
+=    Answers to questions   =
+=============================

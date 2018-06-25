@@ -7,6 +7,7 @@ import oop.ex6.fileProcessor.variblePackage.VariableType;
 
 import java.util.*;
 
+/**A class we call when we find a method declare line*/
 public class MethodFactory {
 
     //--constants--//
