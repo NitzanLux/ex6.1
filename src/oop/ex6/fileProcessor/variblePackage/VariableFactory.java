@@ -10,10 +10,13 @@ import java.util.LinkedList;
 public class VariableFactory {
 
     private static final int FIRST_POSITION = 0;
+    private static final int VARIABLE_PLACE_IN_ARRAY = 0;
+    private static final int VALUE_PLACE_IN_ARRAY = 1;
     private File file;
 
     private static final String EQUAL = "=", SEMICOLON = ";", FINAL = "final", SPACES = "[,();]";
-    public static final int TYPE_PLACE = 0, NAME_PLACE = 1;
+    private static final int TYPE_PLACE = 0,
+    NAME_PLACE = 1;
 
 //    private Scope currentScope = file.getCurrentScope ();
 
@@ -167,7 +170,7 @@ public class VariableFactory {
      */
     private String[] getVariableData(String variable) throws VariableException {
         variable = variable.trim();
-        String[] variableData = variable.split("[ \\t]*(?:[ \\t]+|(?:\\=[ \\t]*))");
+        String[] variableData = variable.split("[ \\t]*(?:[ \\t]++|(?:=[ \\t]*+))");
         if (variableData.length==0) {
             throw new VariableException.IllegalVariableNameException();
         }
@@ -194,15 +197,15 @@ public class VariableFactory {
      * @throws VariableException if theres problem with variabales
      */
     public void reAssignment(String line) throws VariableException {
-        LinkedList<String> strings = getListedVariables(line);
-        //Variable[] variables = getVariables(strings, true);
         line = line.replace(SEMICOLON, "");
         line = line.trim();
-        String[] variables = line.split("[ \\t]*\\,[ \\t]*");
+        String[] variables = line.split("[ \\t]*+,[ \\t]*+");
         for (String variable : variables) {
-            String[] currentVariable = variable.split("[ \\t]*\\=[ \\t]*");
-            if (currentVariable.length == 2 && isLegalReAssignment(currentVariable[0], currentVariable[1])) {//todo duplicate code
-                file.getVariable(currentVariable[0]).assignedVariable(file.getCurrentScope());
+            String[] currentVariable = variable.split("[ \\t]*+=[ \\t]*+");
+            if (currentVariable.length == 2 && isLegalReAssignment(currentVariable[VARIABLE_PLACE_IN_ARRAY],
+                    currentVariable[VALUE_PLACE_IN_ARRAY])) {
+                file.getVariable(currentVariable[VARIABLE_PLACE_IN_ARRAY]).assignedVariable
+                        (file.getCurrentScope());
             } else {
                 throw new VariableException.NoVariableNameException();
             }

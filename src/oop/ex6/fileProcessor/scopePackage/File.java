@@ -1,8 +1,6 @@
 package oop.ex6.fileProcessor.scopePackage;
 
 import oop.ex6.fileProcessor.variblePackage.Variable;
-import sun.awt.SunHints;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 

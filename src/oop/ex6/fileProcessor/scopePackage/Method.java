@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 class Method extends Scope {
 
     //--constants--//
-    private static final Pattern namePattern=Pattern.compile("^[a-zA-Z][\\w]*$");
+    private static final Pattern NAME_PATTERN =Pattern.compile("^[a-zA-Z][\\w]*+$");
     //--Data Members--//
     private String methodName;
     private ArrayList<VariableType> variableTypesInOrder;
@@ -25,7 +25,8 @@ class Method extends Scope {
      * @param methodName name of method
      * @param variableTypesInOrder methods variables in order they are declared
      */
-    Method(HashMap<String, Variable> variables, String methodName,ArrayList<VariableType> variableTypesInOrder)
+    Method(HashMap<String, Variable> variables, String methodName,ArrayList<VariableType>
+            variableTypesInOrder)
              throws ScopeException.IllegalMethodNameException {
          super(variables);
         setMethodName(methodName);
@@ -80,7 +81,7 @@ class Method extends Scope {
      * @throws ScopeException.IllegalMethodNameException if name illegal
      */
     private void setMethodName(String methodName) throws ScopeException.IllegalMethodNameException {
-        Matcher matcher=namePattern.matcher(methodName);
+        Matcher matcher= NAME_PATTERN.matcher(methodName);
         if (matcher.matches()){
             this.methodName=methodName;
         }else {

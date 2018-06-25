@@ -18,7 +18,7 @@ public enum VariableType {
     /**type double - a float number*/
     DOUBLE(Constants.DOUBLE1) {
         boolean isFitValue(String value) {
-            return value.matches ("-?[0-9]+(?:\\.[0-9]+)?");
+            return value.matches (DOUBLE_REGEX_FILTER);
         }
     },
 
@@ -44,6 +44,7 @@ public enum VariableType {
         }
     };
 
+    private static final String DOUBLE_REGEX_FILTER = "-?[0-9]+(?:\\.[0-9]+)?";
     //--data member--//
     private String typeKey;
 

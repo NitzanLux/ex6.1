@@ -15,7 +15,7 @@ public class Variable {
     private VariableType variableType;
 
     //--constant regex pattern for variable--//
-    private static final Pattern namePattern = Pattern.compile
+    private static final Pattern NAME_PATTERN = Pattern.compile
             ("(?:^(?:[A-Za-z]+|(?:[_]+\\w*[A-Za-z]))\\w*\\b)*$");
 
     /**
@@ -138,7 +138,7 @@ public class Variable {
      * @throws VariableException if variable name illegal
      */
     private void setVariableName(String variableName) throws VariableException {
-        Matcher matcher=Variable.namePattern.matcher(variableName);
+        Matcher matcher=Variable.NAME_PATTERN.matcher(variableName);
         if (matcher.matches()){
             this.variableName=variableName;
         }else {

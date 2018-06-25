@@ -33,10 +33,10 @@ public class ConditionFactory {
         String l = line.split("\\{")[0];
         l = l.split("\\(")[1];
         l = l.split("\\)")[0];
-        String[] vars = l.split("(?:\\|\\|)|(?:\\&\\&)");
+        String[] vars = l.split("(?:\\|\\|)|(?:&&)");
         List<String> variables = new LinkedList<>();
         for(String s: vars){
-            variables.add(s.replaceAll("\\s+", ""));
+            variables.add(s.replaceAll("\\s++", ""));
         }
         return variables;
     }
@@ -79,7 +79,7 @@ public class ConditionFactory {
             file.addScope(conditionScope);
         }
         else {
-            throw new ScopeException.IllegalConditionOperatorException ();//todo  not like thate make an exception
+            throw new ScopeException.IllegalConditionOperatorException ();
         }
     }
 

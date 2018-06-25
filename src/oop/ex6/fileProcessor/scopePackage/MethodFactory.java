@@ -12,6 +12,11 @@ public class MethodFactory {
 
     //--constants--//
     private static final int METHOD_PLACE_IN_SCOPE = 1;
+    private static final int MIN_VAR_ASSIGMENT = 2;
+    private static final int VARIABLE_VALUES_POSITION = 1;
+    private static final String METOD_NAME_PREFIX = "void";
+    private static final int METHOD_NAME_IN_ARRAY = 0;
+    private static final String COMMA_REGEX_SPLIT = "[ \\t]*+,[ \\t]*+";
     //--Data Members--//
     private File file;
     private Method currentMethod;
@@ -49,10 +54,10 @@ public class MethodFactory {
         String line= methodCall.getMethodLine();
         HashMap<String,Variable> currentVariables= methodCall.getCurrentVariabls();
         String[] sline = sliceLine(line);
-        Method currentMethod =  file.getMethods().get(sline[0]);
+        Method currentMethod =  file.getMethods().get(sline[METHOD_NAME_IN_ARRAY]);
         if (currentMethod!=null) {
             if (sline.length > 1) {
-                String[] vars = sline[1].split(",");
+                String[] vars = sline[1].split(COMMA_REGEX_SPLIT);
                 checkCallVariables (currentMethod, vars, currentVariables);
             }else {
                 if (currentMethod.getVariableAmmount ()!=0){
@@ -60,7 +65,7 @@ public class MethodFactory {
                 }
             }
         }else {
-            throw new ScopeException.MethodNotDeclaredException (sline[0]);
+            throw new ScopeException.MethodNotDeclaredException (sline[METHOD_NAME_IN_ARRAY]);
         }
     }
 
@@ -107,7 +112,7 @@ public class MethodFactory {
         String[] sline;
         line = line.substring(0, line.indexOf(")"));
         line = line.trim();
-        sline = line.split("\\s*\\(\\s*");
+        sline = line.split("\\s*+\\(\\s*+");
         return sline;
     }
 
@@ -118,7 +123,7 @@ public class MethodFactory {
      */
     private String getName(String line) {
         String methodName=sliceLine(line)[0];
-        methodName=methodName.replace("void","").trim();
+        methodName=methodName.replace(METOD_NAME_PREFIX,"").trim();
         return methodName;
     }
 
@@ -157,9 +162,9 @@ public class MethodFactory {
     private ArrayList<Variable> getArrayVariables(String line) throws VariableException, ScopeException {
         line = line.trim();
         String[] varLines = sliceLine(line);
-        if (varLines.length >= 2) {
-            String varLine = varLines[1];
-            String[] splitVars = varLine.split(",");
+        if (varLines.length >= MIN_VAR_ASSIGMENT) {
+            String varLine = varLines[VARIABLE_VALUES_POSITION];
+            String[] splitVars = varLine.split(COMMA_REGEX_SPLIT);
             LinkedList<String> strings = new LinkedList<>();
             strings.addAll(Arrays.asList(splitVars));
             return generateVariables(strings);
@@ -199,6 +204,7 @@ public class MethodFactory {
      */
     public void methodReturn() {
         if (file.getScopes().size() == METHOD_PLACE_IN_SCOPE + 1 && currentMethod != null) {
+            // pluse one becuse file is also in scope.
             currentMethod.setReturn();
         }
     }
