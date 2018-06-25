@@ -23,9 +23,6 @@ public class Tester_ex6_oop {
 	private static Path pathToUserTests = Paths.get(pathToTests.toString(), "specificTests");
 	private static Path pathToOutputFile = Paths.get(pathToFiles.toString(), "user_output.txt");
 	private static Path pathToSchoolSolution = Paths.get(pathToFiles.toString(), "school_solution.jar");
-//	private static Path pathToMainClass = Paths.get("oop", "ex5", "main", "Sjava.java");
-//	private static Path pathToCompiledFiles = Paths.get(pathToFiles.toString(), "compiled_files");
-
 	private static PrintStream originalOutStream = System.out;
 	private static PrintStream originalErrStream = System.err;
 	private static ByteArrayOutputStream baosP = new ByteArrayOutputStream();

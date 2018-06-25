@@ -12,8 +12,8 @@ public class VariableFactory {
     private static final int FIRST_POSITION = 0;
     private File file;
 
-    private static final String COMMA = ",", EQUAL = "=", SEMICOLON = ";", FINAL = "final";
-    private static final char SPACE = ' ';
+    private static final String EQUAL = "=", SEMICOLON = ";", FINAL = "final", SPACES = "[,();]";
+    public static final int TYPE_PLACE = 0, NAME_PLACE = 1;
 
 //    private Scope currentScope = file.getCurrentScope ();
 
@@ -34,11 +34,16 @@ public class VariableFactory {
         }
     }
 
+    /**
+     * generates a linked list containing all variables as strings
+     * @param line code line we want to generate to variables
+     * @return a linked list of variables as strings
+     */
     private LinkedList<String> getListedVariables(String line) {
         if (line.contains("(")) {
             line = line.substring(line.indexOf("("), line.indexOf(")"));
         }
-        String[] variables = line.split("\\,|\\(|\\)|\\;");
+        String[] variables = line.split(SPACES);
         LinkedList<String> strings = new LinkedList<>();
         for (String variable : variables) {
             strings.addLast(variable);
@@ -48,9 +53,8 @@ public class VariableFactory {
 
     /**
      * gets the variables from assignment line
-     *
      * @param strings the strings after parsing the line
-     * @return variables
+     * @return array contains variables
      * @throws VariableException if variables are not okay
      */
     public Variable[] getVariables(LinkedList<String> strings)
@@ -60,63 +64,20 @@ public class VariableFactory {
         String variableType = null;
         HashSet<String> currentNames = new HashSet<>();
         boolean isItFinal = false;
-        {
-            Variable v=new Variable();
-        }
         for (String variable : strings) {
             int firstIndex = 0;
-            String variableName=null;
-            boolean isAssigned = false;
-            if (variable.contains("=")) {
-                isAssigned = true;
-            }
-            variable = variable.trim();
-            String[] variableData = variable.split("[ \\t]*(?:[ \\t]+|(?:\\=[ \\t]*))");
-            String value = null;
-            if (variableData.length==0) {
-                throw new VariableException.IllegalVariableNameException();
-            }
-            if (isAssigned) {
-                value = variableData[variableData.length - 1];
-            }
-            if (variableData[0].equals("final")) {
+            boolean isAssigned = (variable.contains(EQUAL));
+            String [] variableData = getVariableData (variable);
+            String value = getValue (variableData, isAssigned);
+            if (variableData[0].equals(FINAL)) {
                 isItFinal = true;
                 firstIndex++;
             }
-             if (!((variableData.length==2&&isAssigned)||(variableData.length==1))) {
-                //if thers molty assigment with the same type( boolean a,a,a
-                 if (variableType==null){
-                    variableType = variableData[firstIndex];
-                    variableName = variableData[1 + firstIndex];
-                 }
-                }else {
-                     variableName=variableData[firstIndex];
-             }
-            if (variableType==null||variableName==null) {
-                throw new VariableException.FinalException.AssertionTypeIncompatibleException();//if variable type does not exists.
-            }
-            if (!currentNames.contains(variableName)) {//in case of double assigment name in the same line.
-                currentNames.add(variableName);
-            } else {
-                throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
-            }
-            if (isAssigned && !VariableType.isValueOfType(value)) {//if variable is assigned by reference.
-                Variable variableRefernce=file.getVariable(value);
-                if (variableRefernce!=null&&VariableType.isTypeMatchForAssignment(variableType,variableRefernce
-                        .getVariableType())) {//chack if type are fit.
-                    if (!variableRefernce.isValueAssigned()) {
-                        throw new VariableException.FinalException.AssertionTypeIncompatibleException();
-                    }
-                    variables[counter] = new Variable(variableType, variableName,
-                           true, isItFinal);
-                } else {
-                    throw new VariableException.FinalException.AssertionTypeIncompatibleException();
-                }
-
-            } else {
-                    variables[counter] = new Variable(variableType, variableName,
-                            value, isItFinal);
-            }
+            String[] typeName = typeAndName (variableType, variableData, firstIndex, isAssigned);
+            variableType = typeName[TYPE_PLACE];
+            String variableName = typeName[NAME_PLACE];
+            currentNames = updateCurrentNames (currentNames, variableName);
+            variables[counter] = generateVariable (variableType, variableName, value, isAssigned, isItFinal);
             counter++;
         }
         return variables;
@@ -124,15 +85,118 @@ public class VariableFactory {
 
 
     /**
+     * creates a new String array with 2 members: variable name and variable type
+     * @param variableType variable type (could be null)
+     * @param variableData array that contains data about the variable
+     * @param firstIndex the index in the data where the type of variable appears in
+     * @param isAssigned if variable is assigned a value
+     * @return String array with both variable name and variable type
+     * @throws VariableException in case we try to assert illegal type
+     */
+    private String[] typeAndName(String variableType, String[] variableData,
+                                 int firstIndex, boolean isAssigned) throws VariableException {
+        String variableName = null;
+        if (!((variableData.length==2&&isAssigned)||(variableData.length==1))) {
+            //in case there is a multi assignment of variables from the same type
+            if (variableType==null){
+                variableType = variableData[firstIndex];
+                variableName = variableData[1 + firstIndex];
+            }
+        }else {
+            variableName=variableData[firstIndex];
+        }
+        if (variableType==null||variableName==null) {
+            throw new VariableException.FinalException.AssertionTypeIncompatibleException();
+            //in case variable type does not exists.
+        }
+        return new String[]{variableType, variableName};
+    }
+
+    /**
+     * creates variable from data:
+     * @param variableType .
+     * @param variableName .
+     * @param value .
+     * @param isAssigned .
+     * @param isItFinal .
+     * @return the new variable
+     * @throws VariableException in case of incompatible assertion type
+     */
+    private Variable generateVariable(String variableType, String variableName, String value,
+                                            boolean isAssigned, boolean isItFinal) throws VariableException {
+        if (isAssigned && !VariableType.isValueOfType(value)) {//if variable is assigned by reference.
+            Variable variableReference=file.getVariable(value);
+            if (variableReference!=null&&VariableType.isTypeMatchForAssignment(variableType,
+                    variableReference.getVariableType())) {//check if types fit.
+                if (!variableReference.isValueAssigned()) {
+                    throw new VariableException.FinalException.AssertionTypeIncompatibleException();
+                }
+                return new Variable(variableType, variableName, true, isItFinal);
+            } else {
+                throw new VariableException.FinalException.AssertionTypeIncompatibleException();
+            }
+
+        } else {
+            return new Variable(variableType, variableName, value, isItFinal);
+        }
+    }
+
+    /**
+     * updates currentNames
+     * @param currentNames a hashmap of all the used variables in certain assignment
+     * @param variableName name we want to add
+     * @return updated hashmap with name
+     * @throws VariableException in case we try to assign an already existing name
+     */
+    private HashSet<String> updateCurrentNames(HashSet<String> currentNames, String variableName)
+            throws VariableException {
+        if (!currentNames.contains(variableName)) {
+            //in case of double assignment name in the same line.
+            currentNames.add(variableName);
+        } else {
+            throw new VariableException.FinalException.AssigmentOfTheSameVariableException();
+        }
+        return currentNames;
+    }
+
+    /**
+     * generates data about the variable from string
+     * @param variable string representing the assignment
+     * @return array with data about the variable
+     * @throws VariableException in case of illegal name
+     */
+    private String[] getVariableData(String variable) throws VariableException {
+        variable = variable.trim();
+        String[] variableData = variable.split("[ \\t]*(?:[ \\t]+|(?:\\=[ \\t]*))");
+        if (variableData.length==0) {
+            throw new VariableException.IllegalVariableNameException();
+        }
+        return variableData;
+    }
+
+    /**
+     * gets value to assign
+     * @param variableData data about variable
+     * @param isAssigned boolean variable to know if variable was assigned
+     * @return the value or null if not assigned
+     */
+    private String getValue(String[] variableData, boolean isAssigned){
+        if (isAssigned) {
+            return variableData[variableData.length - 1];
+        }
+        return null;
+    }
+
+
+    /**
      * reassigns Variables
-     *
      * @param line code line
      * @throws VariableException if theres problem with variabales
      */
     public void reAssignment(String line) throws VariableException {
         LinkedList<String> strings = getListedVariables(line);
         //Variable[] variables = getVariables(strings, true);
-        line = line.replace(";", "");
+        line = line.replace(SEMICOLON, "");
         line = line.trim();
         String[] variables = line.split("[ \\t]*\\,[ \\t]*");
         for (String variable : variables) {
@@ -148,47 +212,26 @@ public class VariableFactory {
 
     /**
      * checks if variable assign is legal
-     *
-     * @param
-     * @return
+     * @param variableName name of variable
+     * @param value value we want to reassign in it
+     * @return true if assignment is legal, false otherwise
      */
     private boolean isLegalReAssignment(String variableName, String value) {
-        Variable variable = file.getVariable(variableName);
-        Variable assigningVariable = file.getVariable(value);
+        Variable variable = file.getVariable (variableName);
+        Variable assigningVariable = file.getVariable (value);
         VariableType assigningType;
         if (assigningVariable == null) {
-            assigningType = VariableType.getVariableType(value);
+            assigningType = VariableType.getVariableType (value);
         } else {
-            if (assigningVariable.isValueAssigned()) {
-                assigningType = assigningVariable.getVariableType();
+            if (assigningVariable.isValueAssigned ()) {
+                assigningType = assigningVariable.getVariableType ();
             } else {
                 return false;
             }
         }
-        if (assigningType==null){
-            return false;
-        }
-        if (variable != null && !variable.isFinal()) {
-            return VariableType.isTypeIsParsable( variable.getVariableType(),assigningType);
-        }
-        return false;
+        return assigningType != null && variable != null && !variable.isFinal ()
+                && VariableType.isTypeIsParsable (variable.getVariableType (), assigningType);
+        //returns true only if value type is okay, variable exists, not final and the types match
     }
-
-    private Variable getVariable(String variable) {
-        for (Scope current : file.getScopes()) {
-            if (current.getVariables().containsKey(variable)) {
-                return current.getVariables().get(variable);
-            }
-        }
-        return null;
-    }
-
-    private boolean variableToVaribleAssignmentLeagel(String variableAssignedType, String variableAssigningKey)
-            throws VariableException.TypeNotFoundException {
-        Variable variableAssigning = getVariable(variableAssigningKey);
-        return variableAssigning != null && VariableType.isTypeMatchForAssignment(variableAssignedType,
-                variableAssigning.getVariableType());
-    }
-
 
 }

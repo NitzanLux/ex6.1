@@ -9,15 +9,16 @@ import java.util.*;
 
 public class MethodFactory {
 
+    //--constants--//
     private static final int METHOD_PLACE_IN_SCOPE = 1;
+    //--Data Members--//
     private File file;
     private Method currentMethod;
-    private ArrayList<Method.MethodCalld> methodsCalls = new ArrayList<>();
+    private ArrayList<Method.MethodCall> methodsCalls = new ArrayList<>();
 
     /**
      * constructor
-     *
-     * @param file
+     * @param file file we work om
      */
     public MethodFactory(File file) {
         this.file = file;
@@ -25,13 +26,12 @@ public class MethodFactory {
 
     /**
      * this method is called when we want to create new method
-     *
-     * @param line
-     * @throws VariableException
+     * @param line line string
+     * @throws VariableException if variable not valid
      */
     public void createMethod(String line) throws VariableException, ScopeException {
         String methodName = getName(line);
-        ArrayList<Variable> variables =getArrayVariabls(line);
+        ArrayList<Variable> variables = getArrayVariables (line);
         ArrayList<VariableType> variableTypes=variableToTypesInOrder(variables);
         Method method = new Method(variablesToHashmap(variables), methodName,variableTypes);
         this.currentMethod = method;
@@ -39,59 +39,68 @@ public class MethodFactory {
         this.file.addMethod(method);
     }
 
-    /*
-     * this method called when we call a method
-     *
-     * @param line
-     * @throws ScopeException
+    /**
+     * checker for method call
+     * @param methodCall a methodCall object
+     * @throws ScopeException in case the method was not call legally
      */
-
-    public void methodCallsChecker(Method.MethodCalld methodCalld) throws ScopeException {
-        String line=methodCalld.getMethodLine();
-        HashMap<String,Variable> currentVariables=methodCalld.getCurrentVariabls();
+    private void methodCallsChecker(Method.MethodCall methodCall) throws ScopeException {
+        String line= methodCall.getMethodLine();
+        HashMap<String,Variable> currentVariables= methodCall.getCurrentVariabls();
         String[] sline = sliceLine(line);
-        int counter=0;
         Method currentMethod =  file.getMethods().get(sline[0]);
         if (currentMethod!=null) {
             if (sline.length > 1) {
                 String[] vars = sline[1].split(",");
-                if (vars.length!=currentMethod.getVariableAmmoune()){
-                    throw new ScopeException.MethodVariablesUnfitException();
-                }
-                for (String var : vars) {
-                    var = var.trim();
-                    VariableType variableType=VariableType.getVariableType(var);
-                    if (variableType!=null) {
-                        if (currentMethod.variblesFitToMethodType(counter,variableType)) {
-                            counter++;
-                            continue;
-                        }
-                        else {
-                            throw new ScopeException.MethodVariablesUnfitException();
-                        }
-                    }
-                    Variable currentVar=currentVariables.get(var);
-                    if (currentVar==null||!currentVar.isValueAssigned()) {
-                        throw new ScopeException.VeriableNotAssignedException(var);
-                    }
-
-                }
+                checkCallVariables (currentMethod, vars, currentVariables);
             }else {
-                if (currentMethod.getVariableAmmoune()!=0){
+                if (currentMethod.getVariableAmmount ()!=0){
                     throw new ScopeException.MethodVariablesUnfitException();
                 }
             }
-        } else {
-            throw new ScopeException.MethodNotDeclerdException(sline[0]);
+        }else {
+            throw new ScopeException.MethodNotDeclaredException (sline[0]);
         }
     }
 
-    /*
+    /**
+     * checks method call variables, helper for main check method
+     * @param currentMethod the method we call
+     * @param vars variables as sliced from method call line
+     * @param currentVariables variables of the current method
+     * @throws ScopeException in case method variables found to be unfit
+     */
+    private void checkCallVariables(Method currentMethod, String[] vars, HashMap<String, Variable>
+            currentVariables) throws ScopeException {
+        int counter=0;
+        if (vars.length!=currentMethod.getVariableAmmount ()){
+            throw new ScopeException.MethodVariablesUnfitException();
+        }
+        for (String var : vars) {
+            var = var.trim();
+            VariableType variableType=VariableType.getVariableType(var);
+            if (variableType!=null) {
+                if (currentMethod.variblesFitToMethodType(counter,variableType)) {
+                    counter++;
+                    continue;
+                }
+                else {
+                    throw new ScopeException.MethodVariablesUnfitException();
+                }
+            }
+            Variable currentVar=currentVariables.get(var);
+            if (currentVar==null||!currentVar.isValueAssigned()) {
+                throw new ScopeException.VariableNotAssignedException (var);
+            }
+
+        }
+    }
+
+    /**
      * slices line and returns array size 2:
      * one with method name, and one with variables
-     *
-     * @param line
-     * @return
+     * @param line line string
+     * @return ths line parsed by name and variables
      */
     private String[] sliceLine(String line) {
         String[] sline;
@@ -101,80 +110,114 @@ public class MethodFactory {
         return sline;
     }
 
-    /*
+    /**
      * returns name of the method
-     *
-     * @param line
-     * @return
+     * @param line the string line
+     * @return name of method
      */
     private String getName(String line) {
         String methodName=sliceLine(line)[0];
         methodName=methodName.replace("void","").trim();
         return methodName;
     }
-    private ArrayList<VariableType> variableToTypesInOrder(ArrayList<Variable> variabls){
+
+    /**
+     * gets the types of variables in the method var line by the order they called
+     * @param variables the variables from the line
+     * @return arrayList with the types of variables
+     */
+    private ArrayList<VariableType> variableToTypesInOrder(ArrayList<Variable> variables){
         ArrayList<VariableType> variableTypes = new ArrayList<>();
-        for (Variable variable:variabls) {
+        for (Variable variable:variables) {
             variableTypes.add(variable.getVariableType());
         }
         return variableTypes;
     }
 
-    /*
-     * returns hashmap with variables in method scope
-     *
-     * @param line
-     * @return
-     * @throws VariableException
+    /**
+     * creates a variable hashmaps from variables
+     * @return hashmap with variables in method scope
      */
-    private HashMap<String, Variable> variablesToHashmap(ArrayList<Variable> variabls) throws VariableException {
-        HashMap<String,Variable> variableHashMap=new HashMap<>(variabls.size());
-        for (Variable variable:variabls) {
+    private HashMap<String, Variable> variablesToHashmap(ArrayList<Variable> variables) {
+        HashMap<String,Variable> variableHashMap=new HashMap<>(variables.size());
+        for (Variable variable:variables) {
             variableHashMap.put(variable.getName(),variable);
         }
         return variableHashMap;
     }
-    private ArrayList<Variable> getArrayVariabls (String line) throws VariableException, ScopeException.AlreadyAssignedException {
+
+    /**
+     * creates arrayList of variables from method declare line
+     * @param line code line declaring method
+     * @return arrayList consists of variables in parnethouses
+     * @throws VariableException in case a variable is not legal
+     * @throws ScopeException if variable appear more than once
+     */
+    private ArrayList<Variable> getArrayVariables(String line) throws VariableException, ScopeException {
         line = line.trim();
         String[] varLines = sliceLine(line);
         if (varLines.length >= 2) {
             String varLine = varLines[1];
             String[] splitVars = varLine.split(",");
             LinkedList<String> strings = new LinkedList<>();
-            ArrayList< Variable> variables = new ArrayList<>(strings.size());
             strings.addAll(Arrays.asList(splitVars));
-            {
-                HashSet<String> names=new HashSet<>();
-                VariableFactory variableFactory = new VariableFactory(file);
-                Variable[] variablesArray=null;
-                for (String var:strings) {
-                    LinkedList<String >varLinkedList=new LinkedList<>();
-                    varLinkedList.add(var);
-                    variablesArray = variableFactory.getVariables(varLinkedList);
-                    variablesArray[0].assignedVariable(file.getCurrentScope());
-                    if (names.contains(variablesArray[0].getName())){
-                        throw new ScopeException.AlreadyAssignedException(variablesArray[0].getName());
-                    }
-                    variables.addAll(Arrays.asList(variablesArray));
-                    names.add(variablesArray[0].getName());
-                }
-            }
-            return variables;
+            return generateVariables(strings);
         }
         return new ArrayList<>();
     }
+
+    /**
+     * Helper for getArrayVariables, generates the variables from a linked list
+     * @param strings linked list of strings represent variables
+     * @return array list containing the variables
+     * @throws VariableException in case a variable is not legal
+     * @throws ScopeException if variable appear more than once
+     */
+    private ArrayList<Variable> generateVariables(LinkedList<String> strings)
+            throws VariableException, ScopeException{
+        ArrayList< Variable> variables = new ArrayList<>(strings.size());
+        HashSet<String> names=new HashSet<>();
+        VariableFactory variableFactory = new VariableFactory(file);
+        Variable[] variablesArray;
+        for (String var:strings) {
+            LinkedList<String >varLinkedList=new LinkedList<>();
+            varLinkedList.add(var);
+            variablesArray = variableFactory.getVariables(varLinkedList);
+            variablesArray[0].assignedVariable(file.getCurrentScope());
+            if (names.contains(variablesArray[0].getName())){
+                throw new ScopeException.AlreadyAssignedException(variablesArray[0].getName());
+            }
+            variables.addAll(Arrays.asList(variablesArray));
+            names.add(variablesArray[0].getName());
+        }
+        return variables;
+    }
+
+    /**
+     * sets return of current method
+     */
     public void methodReturn() {
         if (file.getScopes().size() == METHOD_PLACE_IN_SCOPE + 1 && currentMethod != null) {
             currentMethod.setReturn();
         }
     }
+
+    /**
+     * adds metodCall object to method calls
+     * @param line code line recognized as method call
+     */
     public void addMethodCall(String line){
-        methodsCalls.add(new Method.MethodCalld(line,file.getScopeVariables()));
+        methodsCalls.add(new Method.MethodCall (line,file.getScopeVariables()));
     }
-    public void cheakMethodCalls() throws ScopeException {
-        for (Method.MethodCalld methodCalld:methodsCalls) {
-            methodCalld.updateGlobalVariabls(file.getVariables());
-            methodCallsChecker(methodCalld);
+
+    /**
+     * checks method calls
+     * @throws ScopeException if variable appear more than once in method call line
+     */
+    public void checkMethodCalls() throws ScopeException {
+        for (Method.MethodCall methodCall :methodsCalls) {
+            methodCall.updateGlobalVariabls(file.getVariables());
+            methodCallsChecker(methodCall);
         }
     }
 

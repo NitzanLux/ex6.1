@@ -1,7 +1,6 @@
 package oop.ex6.fileProcessor.scopePackage;
 
 import oop.ex6.fileProcessor.variblePackage.Variable;
-import oop.ex6.fileProcessor.variblePackage.VariableException;
 import oop.ex6.fileProcessor.variblePackage.VariableType;
 
 import java.util.HashMap;
@@ -14,16 +13,21 @@ import java.util.List;
  */
 public class ConditionFactory {
 
+    //the file object representing the file we work on
     private File file;
 
+    /**
+     * constructor
+     * @param file the file object representing the file we work on
+     */
      public ConditionFactory(File file){
         this.file=file;
      }
 
     /**
      * gets variables from parentouses.
-     * @param line
-     * @return
+     * @param line code line
+     * @return a list of strings representing the variabes in the parentouses
      */
     private List<String> getVariables(String line){
         String l = line.split("\\{")[0];
@@ -39,8 +43,8 @@ public class ConditionFactory {
 
     /**
      * checks if variables are legal to assign
-     * @param variables
-     * @return
+     * @param variables string list of variables
+     * @return true if variables are legal
      */
     private boolean areVariablesLegit(List<String> variables){
         for(String variable: variables){
@@ -75,7 +79,7 @@ public class ConditionFactory {
             file.addScope(conditionScope);
         }
         else {
-            throw new ScopeException.IleagleConditionOperatorException();//todo  not like thate make an exception
+            throw new ScopeException.IllegalConditionOperatorException ();//todo  not like thate make an exception
         }
     }
 

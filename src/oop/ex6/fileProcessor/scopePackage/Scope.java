@@ -4,20 +4,42 @@ import oop.ex6.fileProcessor.variblePackage.VariableException;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * abstract class scope
+ */
 public abstract class Scope {
-    HashSet<Variable> assigendInScopeVariables=new HashSet<>();
+
+    //data members
+    HashSet<Variable> assignedInScopeVariables =new HashSet<>();
      HashMap<String,Variable> variables;
+
+    /**
+     * data constructor
+     * @param variables variables dataset
+     */
      Scope(HashMap<String, Variable> variables){
         this.variables = variables;
     }
 
+    /**default constructor*/
     Scope(){
          this.variables=new HashMap<>();
     }
 
+    /**
+     * check if variable assigned
+     * @param variable variable to check
+     * @return true if yes
+     */
     private boolean isVariableAssigned(Variable variable){
         return (this.variables.containsKey(variable.getName()));
     }
+
+    /**
+     * adds variable to scope data set
+     * @param variable we want to add
+     * @throws ScopeException in case variable already assigned
+     */
     public void addVariable(Variable variable) throws ScopeException, VariableException {
         if (isVariableAssigned(variable)){
             throw new ScopeException.AlreadyAssignedException(variable.getName());
@@ -27,19 +49,28 @@ public abstract class Scope {
         }
         variables.put(variable.getName(), variable);
     }
-    public void reAssignVariable(Variable variable,boolean assignedInThisScope) throws VariableException {
+
+    /**
+     * reassignment of variable
+     * @param variable variable we want to assign
+     * @param assignedInThisScope if the variable is assigned in scope
+     */
+    public void reAssignVariable(Variable variable,boolean assignedInThisScope) {
         if (assignedInThisScope){
-            assigendInScopeVariables.add(variable);
+            assignedInScopeVariables.add(variable);
         }
     }
 
+    /**
+     * @return variables
+     */
     public HashMap<String, Variable> getVariables() {
         return variables;
     }
 
+    /**
+     * @return if we can close the scope
+     */
     public abstract boolean closeScope(Scope parentScope);
 
-    public void setVariables(HashMap<String, Variable> variables) {
-        this.variables = variables;
-    }
 }

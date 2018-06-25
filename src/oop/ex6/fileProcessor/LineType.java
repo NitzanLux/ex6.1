@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
  * a enum that represent a format of a line.
  */
 public enum LineType {
+    /**a method declaration line*/
     METHOD(RegexConstants.METHOD_REGEX_STR, ScoopPosition.OUTER_SCOPE, true) {
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound)
@@ -25,6 +26,8 @@ public enum LineType {
             return false;
         }
     },
+
+    /**variables assignment line*/
     ASSIGNMENT(RegexConstants.ASSIGNMENT_REGEX_STR, ScoopPosition.BOTH, false) {
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound)
@@ -38,15 +41,20 @@ public enum LineType {
             return false;
         }
 
+        /**
+         * check if line fit to assignment
+         * @param line the code line
+         * @return true if it fits assignment
+         */
         private boolean isAssignmentFit(String line) {
             line = line.trim();
             boolean assignedPrefix = false;
             if (line.endsWith(";")) {
                 line = line.substring(0, line.length() - 1);
-                String[] variables = line.split("[ \\t]*\\,[ \\t]*", -1);
+                String[] variables = line.split("[ \\t]*,[ \\t]*", -1);
                 for (String variableLine : variables) {
                     if (!assignedPrefix) {
-                        String[] firstVar = variableLine.split("[ \\t]*(?:[ \\t]|\\=)[ \\t]*");
+                        String[] firstVar = variableLine.split("[ \\t]*(?:[ \\t]|=)[ \\t]*");
                         for (String varType : firstVar) {
                             try {
                                 VariableType.parseType(varType);
@@ -64,27 +72,32 @@ public enum LineType {
                     }
                 }
                 return true;
-
             }
             return false;
         }
     },
+
+    /**if scope declaration line*/
     IF(String.format(RegexConstants.CONDITION_REGEX_STR, RegexConstants.IF_STATMENT),
             ScoopPosition.INNER_SCOPE, true) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound) throws ScopeException {
-            return coditisionProcessor(line, fileAnalyzer, toProcess, isFound);
+            return conditionProcessor (line, fileAnalyzer, toProcess, isFound);
         }
     },
+
+    /**while scope declaration line*/
     WHILE(String.format(RegexConstants.CONDITION_REGEX_STR, RegexConstants.WHILE_STATMENT),
             ScoopPosition.INNER_SCOPE, true) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
                                        boolean isFound) throws ScopeException {
-            return coditisionProcessor(line, fileAnalyzer, toProcess, isFound);
+            return conditionProcessor (line, fileAnalyzer, toProcess, isFound);
         }
     },
+
+    /**method call line*/
     METHOD_CALL(RegexConstants.METHOD_CALL_REGEX_STR, ScoopPosition.INNER_SCOPE, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
@@ -98,6 +111,8 @@ public enum LineType {
             return false;
         }
     },
+
+    /**return line*/
     RETURN(RegexConstants.RETURN_REGEX_STR, ScoopPosition.INNER_SCOPE, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) {
@@ -110,6 +125,8 @@ public enum LineType {
             return false;
         }
     },
+
+    /**reassignment line*/
     REASSIGNMENT(RegexConstants.REASSIGNMENT_REGEX_STR, ScoopPosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) throws VariableException {
@@ -122,12 +139,16 @@ public enum LineType {
             return false;
         }
     },
+
+    /**blank line, or documentation*/
     BLANK_LINE(RegexConstants.BLANK_LINE_REGEX_STR, ScoopPosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) {
             return (isFound || this.isMatch(line) || line == null);
         }
     },
+
+    /**close scope line*/
     CLOSE_SCOPE(RegexConstants.CLOSE_SCOPE_REGEX_STR, ScoopPosition.BOTH, false) {
         @Override
         public boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) throws ScopeException {
@@ -140,20 +161,16 @@ public enum LineType {
             return false;
         }
     };
-    /*
-     * the line scope position.
-     */
+
+    /**the line scope position*/
     private final ScoopPosition scopePosition;
-    /*
-     * the regex pattern .
-     */
+    /**the regex pattern .*/
     private final Pattern regex;
-    /*
-     * true if the line create new scope , false otherwise.
-     */
+
+    /**true if the line create new scope , false otherwise.*/
     private boolean scopeCreater;
 
-    /*
+    /**
      * LineType constructor.
      * @param regex the propper regex line.
      * @param scopePosition the line scope position.
@@ -185,15 +202,40 @@ public enum LineType {
         }
     }
 
-    public abstract boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound)
-            throws VariableException, ScopeException;
+    /**
+     * abstract method, processes line
+     * @param line line to process
+     * @param fileAnalyzer the analyzer pbject
+     * @param toProcess if need to process line
+     * @param isFound if is found
+     * @return true if it legal
+     * @throws VariableException in case problem with variable
+     * @throws ScopeException in cae scope not okay
+     */
+    public abstract boolean processSentence(String line, FileAnalyzer fileAnalyzer, boolean toProcess,
+            boolean isFound) throws VariableException, ScopeException;
 
+    /**
+     *check if linr match regex
+     * @param line code line
+     * @return true if it fit
+     */
     boolean isMatch(String line) {
         Matcher matcher = this.regex.matcher(line);
         return matcher.matches();
     }
 
-    boolean coditisionProcessor(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound) throws ScopeException {
+    /**
+     * process condition declare
+     * @param line the line declare condition
+     * @param fileAnalyzer object fileanalyzer
+     * @param toProcess if need to process
+     * @param isFound if found
+     * @return true if condition legal
+     * @throws ScopeException if scope illegal
+     */
+    boolean conditionProcessor(String line, FileAnalyzer fileAnalyzer, boolean toProcess, boolean isFound)
+            throws ScopeException {
         if (isFound || this.isMatch(line)) {
             if (toProcess) {
                 fileAnalyzer.getConditionFactory().assignScope(line);
@@ -203,7 +245,7 @@ public enum LineType {
         return false;
     }
 
-    /*
+    /**
      * a class which hold a LineType regex Expressions.
      */
     private static class RegexConstants {
@@ -232,32 +274,32 @@ public enum LineType {
         private static final String CLOSE_SCOPE_REGEX_STR = "^[ \\t]*\\}[ \\t]*$";
     }
 
-    /*
-     *inne enum that represeent the current scope position;
+    /**
+     *inner enum that represeent the current scope position;
      */
     private enum ScoopPosition {
-        /*
+        /**
          * an only inner scope
          */
         INNER_SCOPE(false, true),
-        /*
+        /**
          * an only outer scope.
          */
         OUTER_SCOPE(true, false),
-        /*
+        /**
          * inner and outer scope together.
          */
         BOTH(true, true);
-        /*
+        /**
          *if the line type should be in outer scope.
          */
         private final boolean inOuterScope;
-        /*
+        /**
          * if the line type should be in inner scope.
          */
         private final boolean inInnerScope;
 
-        /*
+        /**
          * enum constructor
          * @param isOuter if the line type should be in outer scope.
          * @param isInner if the line type should be in inner scope.
@@ -267,14 +309,14 @@ public enum LineType {
             this.inOuterScope = isOuter;
         }
 
-        /*
+        /**
          * @return boolean answer if it is an outer scope line
          */
         boolean isOuter() {
             return inOuterScope;
         }
 
-        /*
+        /**
          * @return boolean answer if it is an inner scope line
          */
         boolean isInner() {

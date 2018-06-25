@@ -10,14 +10,16 @@ import static java.nio.file.Files.readAllLines;
  * a single tone class which read the file from a given path.
  */
 class Reader {
-    /*
-    instance
+    /**
+    instance member
      */
     private static Reader instance=new Reader();
 
+    /**default constructor*/
     private Reader(){
     }
 
+    /**getter for instance*/
     static Reader getInstance() {
         return instance;
     }
@@ -28,9 +30,6 @@ class Reader {
      */
     ArrayList<String> readLines(String path) throws IOException {
         ArrayList<String> sjavaData=new ArrayList<>();
-//        if (path.contains("")){
-//            throw new IOException();
-//        }
             try (BufferedReader bufferedReader=new BufferedReader(new FileReader(path))) {
                 File f = new File(path);
                 if(!f.exists()){
