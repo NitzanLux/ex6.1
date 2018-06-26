@@ -40,7 +40,7 @@ public abstract class Scope {
      * @param variable we want to add
      * @throws ScopeException in case variable already assigned
      */
-    public void addVariable(Variable variable) throws ScopeException, VariableException {
+    public void addVariable(Variable variable) throws ScopeException{
         if (isVariableAssigned(variable)){
             throw new ScopeException.AlreadyAssignedException(variable.getName());
         }

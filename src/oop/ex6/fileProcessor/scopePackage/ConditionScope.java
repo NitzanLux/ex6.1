@@ -8,7 +8,7 @@ import java.util.HashMap;
  * class represents a condition (if/while)
  * inherits from scope
  */
-public class ConditionScope extends Scope{
+class ConditionScope extends Scope{
 
     /**
      * default constructor
